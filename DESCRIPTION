@@ -1,0 +1,29 @@
+Type: Package
+Package: parapurrr
+Title: Do Purrr in Parallel
+Version: 0.1
+Authors@R: 
+    person(given = "Moosa",
+           family = "Rezwani",
+           role = c("aut", "cre", "cph"),
+           email = "moosa.rezwani@gmail.com")
+Description: This package Connects Purrr and Foreach packages. The only thing
+    you need to do is to add a "pa_" suffix before your purrr functions. That's
+    it! The purrr's mapping functins will be handled to Foreeach and you can
+    use every available CPU cores in your computer. Of course, there are other
+    extra arguments that will give you more control, but they are optional.
+License: GPL-3
+URL: https://github.com/moosa-r/parapurrr
+BugReports: https://github.com/moosa-r/parapurrr/issues
+Depends:
+    foreach,
+    purrr
+Imports:
+    doParallel
+Suggests:
+    knitr,
+    rmarkdown
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+RoxygenNote: 7.1.1

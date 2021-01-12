@@ -1,0 +1,11 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^\.travis\.yml$
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+^desktop\.ini$
+^icon\.ico$
+^doc$
+^Meta$
