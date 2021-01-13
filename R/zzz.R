@@ -13,3 +13,14 @@
 #' @name parapurrr
 #' @keywords internal
 "_PACKAGE"
+
+
+.onLoad <- function(libname, pkgname) {
+  options(pa_os = .Platform$OS.type,
+          pa_cores = parallel::detectCores() - 1,
+          pa_cluster_type = switch(.Platform$OS.type,
+                                   "windows" = "PSOCK",
+                                   "unix" = "FORK")
+          )
+  invisible()
+}
