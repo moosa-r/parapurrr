@@ -1,3 +1,11 @@
+#' Create Names or Index
+#' Copied from purrr's source, but modified the code to remove direct dependency
+#'   to rlang. If the input x is named, the names will be returned, otherwise
+#'   the elements' index will be returned.
+#' @param x
+#'
+#' @return names or indexes of x
+#' @noRd
 .vec_index <- function(x) {
   # copied from purrr's source, but modified to remove dependency
   y = names(x)
@@ -8,9 +16,28 @@
   }
 }
 
+#' Parallel Version of purrr imap family
+#'
+#' The syntax and the logic of pa_imap* functions are the identical to purrr's
+#'   map functions. Please refer to \code{\link[purrr]{imap}} if you are not
+#'   familiar with purrr mapping style. Except .x and .y, other arguments are
+#'   optional and control the parallelization processes. They will be handled
+#'   to foreeach function and the selected forreach adaptor.
+#'
+#' Note that except cores, cluster_type, and adaptor, documentation of other
+#'   arguments, return section, and examples section are automatically imported
+#'   from purrr and foreach packages.
+#'
+#' @inheritParams purrr::imap
+#' @inheritParams foreach::foreach
+#' @inheritParams pa_map
+#'
+#' @inherit purrr::imap return
+#'
+#' @export
 pa_imap <- function(.x, .f,
-                    cores = NULL, cluster_type = NULL,
-                    adaptor = "DoParallel",
+                    cores = NULL,
+                    adaptor = "DoParallel", cluster_type = NULL,
                     .export = NULL, .packages = NULL, .noexport = NULL,
                     .errorhandling = "stop",
                     .inorder = TRUE,
@@ -39,10 +66,11 @@ pa_imap <- function(.x, .f,
   return(output)
 }
 
-
+#' @rdname pa_imap
+#' @export
 pa_imap_lgl <- function(.x, .f,
-                        cores = NULL, cluster_type = NULL,
-                        adaptor = "DoParallel",
+                        cores = NULL,
+                        adaptor = "DoParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -71,9 +99,11 @@ pa_imap_lgl <- function(.x, .f,
   return(output)
 }
 
+#' @rdname pa_imap
+#' @export
 pa_imap_int <- function(.x, .f,
-                        cores = NULL, cluster_type = NULL,
-                        adaptor = "DoParallel",
+                        cores = NULL,
+                        adaptor = "DoParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -102,9 +132,11 @@ pa_imap_int <- function(.x, .f,
   return(output)
 }
 
+#' @rdname pa_imap
+#' @export
 pa_imap_dbl <- function(.x, .f,
-                        cores = NULL, cluster_type = NULL,
-                        adaptor = "DoParallel",
+                        cores = NULL,
+                        adaptor = "DoParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -133,9 +165,11 @@ pa_imap_dbl <- function(.x, .f,
   return(output)
 }
 
+#' @rdname pa_imap
+#' @export
 pa_imap_chr <- function(.x, .f,
-                        cores = NULL, cluster_type = NULL,
-                        adaptor = "DoParallel",
+                        cores = NULL,
+                        adaptor = "DoParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -164,9 +198,11 @@ pa_imap_chr <- function(.x, .f,
   return(output)
 }
 
+#' @rdname pa_imap
+#' @export
 pa_imap_df <- function(.x, .f,
-                       cores = NULL, cluster_type = NULL,
-                       adaptor = "DoParallel",
+                       cores = NULL,
+                       adaptor = "DoParallel", cluster_type = NULL,
                        .export = NULL, .packages = NULL, .noexport = NULL,
                        .errorhandling = "stop",
                        .inorder = TRUE,
@@ -198,9 +234,11 @@ pa_imap_df <- function(.x, .f,
   return(output)
 }
 
+#' @rdname pa_imap
+#' @export
 pa_imap_dfr <- function(.x, .f,
-                        cores = NULL, cluster_type = NULL,
-                        adaptor = "DoParallel",
+                        cores = NULL,
+                        adaptor = "DoParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -232,9 +270,11 @@ pa_imap_dfr <- function(.x, .f,
   return(output)
 }
 
+#' @rdname pa_imap
+#' @export
 pa_imap_dfc <- function(.x, .f,
-                        cores = NULL, cluster_type = NULL,
-                        adaptor = "DoParallel",
+                        cores = NULL,
+                        adaptor = "DoParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -266,9 +306,11 @@ pa_imap_dfc <- function(.x, .f,
   return(output)
 }
 
+# #' @rdname pa_imap
+# #' @export
 # pa_imap_raw <- function(.x, .f,
-#                         cores = NULL, cluster_type = NULL,
-#                         adaptor = "DoParallel",
+#                         cores = NULL,
+#                         adaptor = "DoParallel", cluster_type = NULL,
 #                         .export = NULL, .packages = NULL, .noexport = NULL,
 #                         .errorhandling = "stop",
 #                         .inorder = TRUE,

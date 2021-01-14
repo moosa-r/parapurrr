@@ -84,7 +84,6 @@
   invisible()
 }
 
-
 #' Internal backbone of parapurrr functions
 #' This function is the only function that will be called by map, map2, and
 #'   imap function families. every necessary steps from handling user input,
@@ -92,26 +91,30 @@
 #'   handling the results to the user will be performed by .pa_internal.
 #'   except int_fun, other arguments will be handled to either purrr's mapping
 #'   function, parallel cluster registering function or foreeach function.
-#' @param .x
-#' @param .y
-#' @param .f
-#' @param int_fun
-#' @param adaptor
-#' @param cores
-#' @param cluster_type
-#' @param .combine
-#' @param .init
-#' @param .final
-#' @param .inorder
-#' @param .multicombine
-#' @param .maxcombine
-#' @param .errorhandling
-#' @param .packages
-#' @param .export
-#' @param .noexport
-#' @param .verbose
+#' @param .x refer to \code{\link[purrr]{map}} and \code{\link[purrr]{imap}}
+#' @param .y refer to \code{\link[purrr]{map2}}
+#' @param .f refer to \code{\link[purrr]{map}}, \code{\link[purrr]{imap}} and
+#'   \code{\link[purrr]{map2}}
+#' @param int_fun After the input has been splitted into multiple chunks,
+#'   this purrr mapping expression will be applied to each chunk.
+#' @param adaptor refer to \code{\link{.pa_reg_clusters}}
+#' @param cores refer to \code{\link{.pa_reg_clusters}}
+#' @param cluster_type refer to \code{\link{.pa_reg_clusters}}
+#' @param .combine refer to \code{\link[foreach]{foreach}}
+#' @param .init refer to \code{\link[foreach]{foreach}}
+#' @param .final refer to \code{\link[foreach]{foreach}}
+#' @param .inorder refer to \code{\link[foreach]{foreach}}
+#' @param .multicombine refer to \code{\link[foreach]{foreach}}
+#' @param .maxcombine refer to \code{\link[foreach]{foreach}}
+#' @param .errorhandling refer to \code{\link[foreach]{foreach}}
+#' @param .packages refer to \code{\link[foreach]{foreach}}
+#' @param .export refer to \code{\link[foreach]{foreach}}
+#' @param .noexport refer to \code{\link[foreach]{foreach}}
+#' @param .verbose refer to \code{\link[foreach]{foreach}}
 #'
-#' @return
+#' @return an object similar to what could be expected from the results of
+#'   int_fun argument
+#' @importFrom foreach %dopar%
 #' @noRd
 .pa_internal <- function(.x,
                          .y,
