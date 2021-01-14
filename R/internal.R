@@ -9,22 +9,37 @@
 #' @return a list with core numbers, cluster type and splitting indexes to be
 #'   handled to downstream internal functions.
 #' @noRd
-.pa_args <- function(x_length, cores = NULL, cluster_type = NULL) {
+.pa_args <- function(x_length,
+                     cores = NULL,
+                     adaptor = "doParallel",
+                     cluster_type = NULL) {
+  ## handle cluster type
+  if (is.null(cluster_type)) {
+    cluster_type <- getOption("pa_cluster_type")[[adaptor]]
+  } else {
+    if (adaptor == "doParallel") {
+      if (match(cluster_type, c("FORK", "PSOCK"), nomatch = 0) == 0) {
+        stop("In doParallel, cluster_type should be 'PSOCK' or 'FORK'.", call. = FALSE)
+      }
+      if (getOption("pa_os") == "windows" && cluster_type == "FORK") {
+        stop("Fork cluster type is not supported in Windows.", call. = FALSE)
+      }
+
+    } else if (adaptor == "doSNOW") {
+      if (match(cluster_type, c("MPI", "NWS", "SOCK"), nomatch = 0) == 0 ) {
+        stop("In doSNOW, cluster_type should be 'SOCK', 'MPI', or 'NWS'.", call. = FALSE)
+      }
+      if (getOption("pa_os") == "windows" && (cluster_type == "MPI" || cluster_type == "NWS")) {
+        stop(cluster_type, " cluster type is not supported in Windows.", call. = FALSE)
+      }
+    }
+  }
+
+  ### handle cores
   cores <- min(ifelse(is.numeric(cores),
                       yes = cores,
                       no = getOption("pa_cores")),
                x_length)
-  ## set main arguments
-  if (is.null(cluster_type)) {
-    cluster_type <- getOption("pa_cluster_type")
-  } else {
-    if (!(cluster_type == "FORK" || cluster_type == "PSOCK")) {
-      stop("cluster_type should be 'PSOCK' or 'FORK'.", call. = FALSE)
-    }
-    if (getOption("pa_os") == "windows" && cluster_type == "FORK") {
-      stop("Fork cluster is not supported in Windows.", call. = FALSE)
-    }
-  }
 
   ### divide the input
   if (cores <= 1) {
