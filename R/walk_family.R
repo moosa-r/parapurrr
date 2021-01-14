@@ -1,10 +1,10 @@
 pa_walk <- function(.x, .f,
                     cores = NULL, cluster_type = NULL,
                     adaptor = "DoParallel",
-                    export_objs = NULL, export_packgs = NULL, no_export = NULL,
-                    error_handeling = "stop",
-                    in_order = TRUE,
-                    verbose = FALSE) {
+                    .export = NULL, export_packgs = NULL, .noexport = NULL,
+                    .errorhandling = "stop",
+                    .inorder = TRUE,
+                    .verbose = FALSE) {
 
   int_fun <- quote(purrr::map(x, .f))
 
@@ -15,27 +15,27 @@ pa_walk <- function(.x, .f,
                          adaptor = adaptor,
                          cores = cores,
                          cluster_type = cluster_type,
-                         combine = c,
-                         init = NULL,
-                         final = NULL,
-                         in_order = in_order,
-                         multi_combine = TRUE,
-                         max_combine = NULL,
-                         error_handeling = error_handeling,
+                         .combine = c,
+                         .init = NULL,
+                         .final = NULL,
+                         .inorder = .inorder,
+                         .multicombine = TRUE,
+                         .maxcombine = NULL,
+                         .errorhandling = .errorhandling,
                          export_packgs = export_packgs,
-                         export_objs = export_objs,
-                         no_export = no_export,
-                         verbose = verbose)
+                         .export = .export,
+                         .noexport = .noexport,
+                         .verbose = .verbose)
   invisible(output)
 }
 
 pa_walk2 <- function(.x, .y, .f,
                      cores = NULL, cluster_type = NULL,
                      adaptor = "DoParallel",
-                     export_objs = NULL, export_packgs = NULL, no_export = NULL,
-                     error_handeling = "stop",
-                     in_order = TRUE,
-                     verbose = FALSE) {
+                     .export = NULL, export_packgs = NULL, .noexport = NULL,
+                     .errorhandling = "stop",
+                     .inorder = TRUE,
+                     .verbose = FALSE) {
 
   int_fun <- quote(purrr::map2(x$.x, x$.y, .f))
 
@@ -46,27 +46,27 @@ pa_walk2 <- function(.x, .y, .f,
                          adaptor = adaptor,
                          cores = cores,
                          cluster_type = cluster_type,
-                         combine = c,
-                         init = NULL,
-                         final = NULL,
-                         in_order = in_order,
-                         multi_combine = TRUE,
-                         max_combine = NULL,
-                         error_handeling = error_handeling,
+                         .combine = c,
+                         .init = NULL,
+                         .final = NULL,
+                         .inorder = .inorder,
+                         .multicombine = TRUE,
+                         .maxcombine = NULL,
+                         .errorhandling = .errorhandling,
                          export_packgs = export_packgs,
-                         export_objs = export_objs,
-                         no_export = no_export,
-                         verbose = verbose)
+                         .export = .export,
+                         .noexport = .noexport,
+                         .verbose = .verbose)
   invisible(output)
 }
 
 pa_iwalk <- function(.x, .f,
                      cores = NULL, cluster_type = NULL,
                      adaptor = "DoParallel",
-                     export_objs = NULL, export_packgs = NULL, no_export = NULL,
-                     error_handeling = "stop",
-                     in_order = TRUE,
-                     verbose = FALSE) {
+                     .export = NULL, export_packgs = NULL, .noexport = NULL,
+                     .errorhandling = "stop",
+                     .inorder = TRUE,
+                     .verbose = FALSE) {
 
   int_fun <- quote(purrr::map2(x$.x, x$.y, .f))
 
@@ -77,16 +77,16 @@ pa_iwalk <- function(.x, .f,
                          adaptor = adaptor,
                          cores = cores,
                          cluster_type = cluster_type,
-                         combine = c,
-                         init = NULL,
-                         final = NULL,
-                         in_order = in_order,
-                         multi_combine = TRUE,
-                         max_combine = NULL,
-                         error_handeling = error_handeling,
+                         .combine = c,
+                         .init = NULL,
+                         .final = NULL,
+                         .inorder = .inorder,
+                         .multicombine = TRUE,
+                         .maxcombine = NULL,
+                         .errorhandling = .errorhandling,
                          export_packgs = export_packgs,
-                         export_objs = export_objs,
-                         no_export = no_export,
-                         verbose = verbose)
+                         .export = .export,
+                         .noexport = .noexport,
+                         .verbose = .verbose)
   invisible(output)
 }

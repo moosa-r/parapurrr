@@ -1,3 +1,14 @@
+#' Handle Main Parallel Arguments
+#'
+#' Handle cores (worker) numbers, cluster type and splitting indexes of input
+#'   vector.
+#' @param x_length The length of input atomic vector or list
+#' @param cores  Number of workers (default: Core numbers - 1)
+#' @param cluster_type PSOCK (default for Windows) or FORK (default for Unix)
+#'
+#' @return a list with core numbers, cluster type and splitting indexes to be
+#'   handled to downstream internal functions.
+#' @noRd
 .pa_args <- function(x_length, cores = NULL, cluster_type = NULL) {
   cores <- min(ifelse(is.numeric(cores),
                       yes = cores,
@@ -29,6 +40,16 @@
 }
 
 
+#' Register Clusters
+#' Register Clusters necessary for foreach function. currently only DoParallel
+#'   adaptor is supported, other adaptors will be implemented in the future.
+#' @param adaptor foreeach adaptor. Currently, only DoParallel.
+#' @param cores number of cores (i.e. workers)
+#' @param cluster_type PSOCK (default for Windows) or FORK (default for Unix)
+#'
+#' @return a list containing cluster object (to be used later for terminating
+#'   the cluster) and the adaptor name.
+#' @noRd
 .pa_reg_clusters <- function(adaptor, cores, cluster_type) {
   if (!(length(adaptor) == 1L &&
         match(adaptor, c("DoParallel"), nomatch = 0) > 0) ) {
@@ -48,6 +69,12 @@
 }
 
 
+#' Terminate active cluster
+#'
+#' @param active_cl cluster object returned by .pa_reg_clusters function
+#'
+#' @return NULL, stops clusters as a side-effect.
+#' @noRd
 .pa_stop_clusters <- function(active_cl) {
   switch(active_cl$adaptor,
          "DoParallel" = {
@@ -58,6 +85,34 @@
 }
 
 
+#' Internal backbone of parapurrr functions
+#' This function is the only function that will be called by map, map2, and
+#'   imap function families. every necessary steps from handling user input,
+#'   registering and subsequently terminating the parallel cluster and up to
+#'   handling the results to the user will be performed by .pa_internal.
+#'   except int_fun, other arguments will be handled to either purrr's mapping
+#'   function, parallel cluster registering function or foreeach function.
+#' @param .x
+#' @param .y
+#' @param .f
+#' @param int_fun
+#' @param adaptor
+#' @param cores
+#' @param cluster_type
+#' @param .combine
+#' @param .init
+#' @param .final
+#' @param .inorder
+#' @param .multicombine
+#' @param .maxcombine
+#' @param .errorhandling
+#' @param .packages
+#' @param .export
+#' @param .noexport
+#' @param .verbose
+#'
+#' @return
+#' @noRd
 .pa_internal <- function(.x,
                          .y,
                          .f,
@@ -65,24 +120,24 @@
                          adaptor,
                          cores,
                          cluster_type,
-                         combine,
-                         init,
-                         final,
-                         in_order,
-                         multi_combine,
-                         max_combine,
-                         error_handeling,
-                         export_packgs,
-                         export_objs,
-                         no_export,
-                         verbose) {
+                         .combine,
+                         .init,
+                         .final,
+                         .inorder,
+                         .multicombine,
+                         .maxcombine,
+                         .errorhandling,
+                         .packages,
+                         .export,
+                         .noexport,
+                         .verbose) {
   # Check arguments
-  if (!(length(in_order) == 1L && !is.na(in_order) && is.logical(in_order))) {
-    stop("in_order should be 'TRUE' or 'FALSE'.", call. = FALSE)
+  if (!(length(.inorder) == 1L && !is.na(.inorder) && is.logical(.inorder))) {
+    stop(".inorder should be 'TRUE' or 'FALSE'.", call. = FALSE)
   }
 
-  if (!(length(verbose) == 1L && !is.na(verbose) && is.logical(verbose))) {
-    stop("verbose should be 'TRUE' or 'FALSE'.", call. = FALSE)
+  if (!(length(.verbose) == 1L && !is.na(.verbose) && is.logical(.verbose))) {
+    stop(".verbose should be 'TRUE' or 'FALSE'.", call. = FALSE)
   }
 
   if (!is.null(.y) && length(.x) != length(.y)) {
@@ -91,21 +146,21 @@
          call. = FALSE)
   }
 
-  if (!(length(error_handeling) == 1L &&
-        match(error_handeling, c("stop", "remove", "pass"), nomatch = 0) > 0)) {
-    stop("error_handeling should be 'stop', 'remove' or 'pass'.",
+  if (!(length(.errorhandling) == 1L &&
+        match(.errorhandling, c("stop", "remove", "pass"), nomatch = 0) > 0)) {
+    stop(".errorhandling should be 'stop', 'remove' or 'pass'.",
          call. = FALSE)
   }
 
-  if (!is.null(export_packgs) && !is.character(export_packgs)) {
-    stop("export_packgs should be a character vector.")
+  if (!is.null(.packages) && !is.character(.packages)) {
+    stop(".packages should be a character vector.")
   }
 
-  if (!is.null(export_objs) && !is.character(export_objs)) {
-    stop("export_objs should be a character vector.")
+  if (!is.null(.export) && !is.character(.export)) {
+    stop(".export should be a character vector.")
   }
-  if (!is.null(no_export) && !is.character(no_export)) {
-    stop("no_export should be a character vector.")
+  if (!is.null(.noexport) && !is.character(.noexport)) {
+    stop(".noexport should be a character vector.")
   }
   # cluster arguments
   int_args <- .pa_args(x_length = length(.x),
@@ -128,36 +183,36 @@
   on.exit(.pa_stop_clusters(cl))
   # perform!
   output <- foreach::foreach(x = foreach_input,
-                             .combine = combine,
-                             .init = init,
-                             .final = final,
-                             .inorder = in_order,
-                             .multicombine = multi_combine,
+                             .combine = .combine,
+                             .init = .init,
+                             .final = .final,
+                             .inorder = .inorder,
+                             .multicombine = .multicombine,
                              .maxcombine = max(2,
-                                               max_combine,
+                                               .maxcombine,
                                                int_args$cores),
-                             .errorhandling = error_handeling,
-                             .packages = export_packgs,
-                             .export = c(export_objs, ".f"),
-                             .noexport = c(no_export,
+                             .errorhandling = .errorhandling,
+                             .packages = .packages,
+                             .export = c(.export, ".f"),
+                             .noexport = c(.noexport,
                                            ".x",
                                            ".y",
                                            "int_args",
                                            "cl",
                                            "cores",
                                            "cluster_type",
-                                           "combine",
-                                           "init",
-                                           "final",
-                                           "in_order",
-                                           "multi_combine",
-                                           "max_combine",
-                                           "error_handeling",
-                                           "export_packgs",
-                                           "export_objs",
-                                           "no_export",
-                                           "verbose"),
-                             .verbose = verbose) %dopar% {
+                                           ".combine",
+                                           ".init",
+                                           ".final",
+                                           ".inorder",
+                                           ".multicombine",
+                                           ".maxcombine",
+                                           ".errorhandling",
+                                           ".packages",
+                                           ".export",
+                                           ".noexport",
+                                           ".verbose"),
+                             .verbose = .verbose) %dopar% {
                                output = eval(int_fun)
                                return(output)
                              }
