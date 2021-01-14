@@ -14,14 +14,21 @@
 #' @inheritParams foreach::foreach
 #' @param cores (optional) Number of cores (i.e. workers) to be used. Default
 #'   is: your computer CPU cores - 1
-#' @param adaptor The foreeach adaptor to be used. Available options are:
-#'   "DoParallel" (default).
-#' @param cluster_type The Clusters archetecture to be used with the selected
+#' @param adaptor The foreach adaptor to be used. Available options are:
+#'   \itemize{\item "doParallel" (default) \item "doSNOW"}
+#' @param cluster_type The Clusters architecture to be used with the selected
 #'   adaptor. Note that allowed values for this argument, depends on the
-#'   "adaptor" argument: \itemize{
-#'   \item if adaptor = "DoParallel":
-#'     \enumerate{\item PSOCK (default for Windows)
-#'                \item FORK (default for Unix)}
+#'   "adaptor" argument: \enumerate{
+#'   \item if adaptor = doParallel":
+#'     \itemize{
+#'       \item in windows OS: "PSOCK" (default for Windows)
+#'       \item in Unix-based OS: "FORK" (default for Unix), "PSOCK"
+#'       }
+#'   \item if adaptor = "doSNOW":
+#'     \itemize{
+#'     \item in windows OS: "SOCK" (default for Windows)
+#'     \item in Unix-based OS: "MPI" (default for Unix), "NWS", "SOCK"
+#'     }
 #'   }
 #'
 #' @inherit purrr::map return
