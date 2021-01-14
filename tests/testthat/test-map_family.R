@@ -40,8 +40,3 @@ test_that("pa_map_dfc works", {
   expect_identical(purrr::map_dfc(x, sqrt),
                    parapurrr::pa_map_dfc(x, sqrt, verbose = TRUE))
 })
-
-test_that("pa_map_raw works", {
-  expect_identical(purrr::map_raw(x, ~as.raw(.x)),
-                   parapurrr::pa_map_raw(x, ~as.raw(.x), verbose = TRUE))
-})
