@@ -56,9 +56,10 @@
 
 
 #' Register Clusters
-#' Register Clusters necessary for foreach function. currently only DoParallel
+#' Register Clusters necessary for foreach function. currently only doParallel
 #'   adaptor is supported, other adaptors will be implemented in the future.
-#' @param adaptor foreeach adaptor. Currently, only DoParallel.
+#' @param adaptor foreach adaptor. Currently, parapurr supports: \enumerate{
+#' \item"doParallel"\item"doSNOW"}
 #' @param cores number of cores (i.e. workers)
 #' @param cluster_type PSOCK (default for Windows) or FORK (default for Unix)
 #'
@@ -67,20 +68,31 @@
 #' @noRd
 .pa_reg_clusters <- function(adaptor, cores, cluster_type) {
   if (!(length(adaptor) == 1L &&
-        match(adaptor, c("DoParallel"), nomatch = 0) > 0) ) {
-    stop("adaptor should be 'DoParallel'.", call. = FALSE)
+        match(adaptor, c("doParallel", "doSNOW"), nomatch = 0) > 0) ) {
+    stop("adaptor should be 'doParallel' or 'doSNOW'.", call. = FALSE)
   }
   switch(adaptor,
-         "DoParallel" = {
+         "doParallel" = {
            if (!requireNamespace("doParallel", quietly = TRUE)) {
              stop("Package 'doParallel' is required to be installed.")
            }
-           cl = parallel::makeCluster(spec = cores,
-                                      type = cluster_type)
+           cl <- parallel::makeCluster(spec = cores,
+                                       type = cluster_type)
            doParallel::registerDoParallel(cl)
-           return(list("cluster" = cl,
-                       "adaptor" = "DoParallel"))
-         })
+         },
+         "doSNOW" = {
+           if (!requireNamespace("doSNOW", quietly = TRUE)) {
+             stop("Package 'doSNOW' is required to be installed. Also: \n",
+                  "If you intend to use MPI clusters: package \"Rmpi\" should be installed.\n",
+                  "If you intend to use NWS clusters: package \"nws\" should be installed.")
+           }
+           cl <- snow::makeCluster(spec = cores,
+                                   type = cluster_type)
+           doSNOW::registerDoSNOW(cl)
+         }
+  )
+  return(list("cluster" = cl,
+              "adaptor" = adaptor))
 }
 
 
