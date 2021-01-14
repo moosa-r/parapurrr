@@ -104,9 +104,12 @@
 #' @noRd
 .pa_stop_clusters <- function(active_cl) {
   switch(active_cl$adaptor,
-         "DoParallel" = {
+         "doParallel" = {
            doParallel::stopImplicitCluster()
-           parallel::stopCluster(active_cl$cluster)})
+           parallel::stopCluster(active_cl$cluster)},
+         "doSNOW" = {
+           snow::stopCluster(active_cl$cluster)
+         })
 
   invisible()
 }
