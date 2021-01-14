@@ -18,9 +18,12 @@
 .onLoad <- function(libname, pkgname) {
   options(pa_os = .Platform$OS.type,
           pa_cores = parallel::detectCores() - 1,
-          pa_cluster_type = switch(.Platform$OS.type,
-                                   "windows" = "PSOCK",
-                                   "unix" = "FORK")
+          pa_cluster_type = list("doParallel" = switch(.Platform$OS.type,
+                                                       "windows" = "PSOCK",
+                                                       "unix" = "FORK"),
+                                 "doSNOW" = switch(.Platform$OS.type,
+                                                   "windows" = "SOCK",
+                                                   "unix" = "MPI"))
   )
   invisible()
 }
