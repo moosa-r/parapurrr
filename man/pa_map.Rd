@@ -15,7 +15,7 @@ pa_map(
   .x,
   .f,
   cores = NULL,
-  adaptor = "DoParallel",
+  adaptor = "doParallel",
   cluster_type = NULL,
   .export = NULL,
   .packages = NULL,
@@ -29,7 +29,7 @@ pa_map_lgl(
   .x,
   .f,
   cores = NULL,
-  adaptor = "DoParallel",
+  adaptor = "doParallel",
   cluster_type = NULL,
   .export = NULL,
   .packages = NULL,
@@ -43,7 +43,7 @@ pa_map_int(
   .x,
   .f,
   cores = NULL,
-  adaptor = "DoParallel",
+  adaptor = "doParallel",
   cluster_type = NULL,
   .export = NULL,
   .packages = NULL,
@@ -57,7 +57,7 @@ pa_map_dbl(
   .x,
   .f,
   cores = NULL,
-  adaptor = "DoParallel",
+  adaptor = "doParallel",
   cluster_type = NULL,
   .export = NULL,
   .packages = NULL,
@@ -71,7 +71,7 @@ pa_map_chr(
   .x,
   .f,
   cores = NULL,
-  adaptor = "DoParallel",
+  adaptor = "doParallel",
   cluster_type = NULL,
   .export = NULL,
   .packages = NULL,
@@ -85,7 +85,7 @@ pa_map_df(
   .x,
   .f,
   cores = NULL,
-  adaptor = "DoParallel",
+  adaptor = "doParallel",
   cluster_type = NULL,
   .export = NULL,
   .packages = NULL,
@@ -99,7 +99,7 @@ pa_map_dfr(
   .x,
   .f,
   cores = NULL,
-  adaptor = "DoParallel",
+  adaptor = "doParallel",
   cluster_type = NULL,
   .export = NULL,
   .packages = NULL,
@@ -113,7 +113,7 @@ pa_map_dfc(
   .x,
   .f,
   cores = NULL,
-  adaptor = "DoParallel",
+  adaptor = "doParallel",
   cluster_type = NULL,
   .export = NULL,
   .packages = NULL,
@@ -149,15 +149,22 @@ present, the value of \code{.default} will be returned.}
 \item{cores}{(optional) Number of cores (i.e. workers) to be used. Default
 is: your computer CPU cores - 1}
 
-\item{adaptor}{The foreeach adaptor to be used. Available options are:
-"DoParallel" (default).}
+\item{adaptor}{The foreach adaptor to be used. Available options are:
+\itemize{\item "doParallel" (default) \item "doSNOW"}}
 
-\item{cluster_type}{The Clusters archetecture to be used with the selected
+\item{cluster_type}{The Clusters architecture to be used with the selected
 adaptor. Note that allowed values for this argument, depends on the
-"adaptor" argument: \itemize{
-\item if adaptor = "DoParallel":
-  \enumerate{\item PSOCK (default for Windows)
-             \item FORK (default for Unix)}
+"adaptor" argument: \enumerate{
+\item if adaptor = doParallel":
+  \itemize{
+    \item in windows OS: "PSOCK" (default for Windows)
+    \item in Unix-based OS: "FORK" (default for Unix), "PSOCK"
+    }
+\item if adaptor = "doSNOW":
+  \itemize{
+  \item in windows OS: "SOCK" (default for Windows)
+  \item in Unix-based OS: "MPI" (default for Unix), "NWS", "SOCK"
+  }
 }}
 
 \item{.export}{character vector of variables to export.
@@ -215,9 +222,9 @@ use in pipe.
 \description{
 The syntax and the logic of pa_map* functions are the identical to purrr's
   map functions. Please refer to \code{\link[purrr]{map}} if you are not
-  familiar with purrr mapping style. Except .x and .y, other arguments are
+  familiar with purrr mapping style. Except .x and .f, other arguments are
   optional and control the parallelization processes. They will be handled
-  to foreeach function and the selected forreach adaptor.
+  to foreach function and the selected foreach adaptor.
 }
 \details{
 Note that except cores, cluster_type, and adaptor, documentation of other
