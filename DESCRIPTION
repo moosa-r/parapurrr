@@ -22,9 +22,11 @@ Imports:
     parallel,
     purrr
 Suggests:
+    doSNOW,
     dplyr,
     rmarkdown,
     knitr,
+    snow,
     testthat (>= 3.0.0)
 VignetteBuilder: 
     knitr
