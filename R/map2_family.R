@@ -2,9 +2,9 @@
 #'
 #' The syntax and the logic of pa_map2* functions are the identical to purrr's
 #'   map functions. Please refer to \code{\link[purrr]{map2}} if you are not
-#'   familiar with purrr mapping style. Except .x and .y, other arguments are
+#'   familiar with purrr mapping style. Except .x, .y, and .f, other arguments are
 #'   optional and control the parallelization processes. They will be handled
-#'   to foreeach function and the selected forreach adaptor.
+#'   to foreach function and the selected forreach adaptor.
 #'
 #' Note that except cores, cluster_type, and adaptor, documentation of other
 #'   arguments, return section, and examples section are automatically imported
@@ -19,7 +19,7 @@
 #' @export
 pa_map2 <- function(.x, .y, .f,
                     cores = NULL,
-                    adaptor = "DoParallel", cluster_type = NULL,
+                    adaptor = "doParallel", cluster_type = NULL,
                     .export = NULL, .packages = NULL, .noexport = NULL,
                     .errorhandling = "stop",
                     .inorder = TRUE,
@@ -52,7 +52,7 @@ pa_map2 <- function(.x, .y, .f,
 #' @export
 pa_map2_lgl <- function(.x, .y, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -85,7 +85,7 @@ pa_map2_lgl <- function(.x, .y, .f,
 #' @export
 pa_map2_int <- function(.x, .y, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -118,7 +118,7 @@ pa_map2_int <- function(.x, .y, .f,
 #' @export
 pa_map2_dbl <- function(.x, .y, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -151,7 +151,7 @@ pa_map2_dbl <- function(.x, .y, .f,
 #' @export
 pa_map2_chr <- function(.x, .y, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -184,7 +184,7 @@ pa_map2_chr <- function(.x, .y, .f,
 #' @export
 pa_map2_df <- function(.x, .y, .f,
                        cores = NULL,
-                       adaptor = "DoParallel", cluster_type = NULL,
+                       adaptor = "doParallel", cluster_type = NULL,
                        .export = NULL, .packages = NULL, .noexport = NULL,
                        .errorhandling = "stop",
                        .inorder = TRUE,
@@ -220,7 +220,7 @@ pa_map2_df <- function(.x, .y, .f,
 #' @export
 pa_map2_dfr <- function(.x, .y, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -256,7 +256,7 @@ pa_map2_dfr <- function(.x, .y, .f,
 #' @export
 pa_map2_dfc <- function(.x, .y, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -292,7 +292,7 @@ pa_map2_dfc <- function(.x, .y, .f,
 # #' @export
 # pa_map2_raw <- function(.x, .y, .f,
 #                        cores = NULL,
-#                        adaptor = "DoParallel", cluster_type = NULL,
+#                        adaptor = "doParallel", cluster_type = NULL,
 #                        .export = NULL, .packages = NULL, .noexport = NULL,
 #                        .errorhandling = "stop",
 #                        .inorder = TRUE,

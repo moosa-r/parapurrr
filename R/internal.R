@@ -120,7 +120,7 @@
 #'   registering and subsequently terminating the parallel cluster and up to
 #'   handling the results to the user will be performed by .pa_internal.
 #'   except int_fun, other arguments will be handled to either purrr's mapping
-#'   function, parallel cluster registering function or foreeach function.
+#'   function, parallel cluster registering function or foreach function.
 #' @param .x refer to \code{\link[purrr]{map}} and \code{\link[purrr]{imap}}
 #' @param .y refer to \code{\link[purrr]{map2}}
 #' @param .f refer to \code{\link[purrr]{map}}, \code{\link[purrr]{imap}} and
@@ -198,6 +198,7 @@
   # cluster arguments
   int_args <- .pa_args(x_length = length(.x),
                        cores = cores,
+                       adaptor = adaptor,
                        cluster_type = cluster_type)
   # split the input
   foreach_input <- lapply(X = int_args$parts,

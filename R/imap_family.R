@@ -20,9 +20,9 @@
 #'
 #' The syntax and the logic of pa_imap* functions are the identical to purrr's
 #'   map functions. Please refer to \code{\link[purrr]{imap}} if you are not
-#'   familiar with purrr mapping style. Except .x and .y, other arguments are
+#'   familiar with purrr mapping style. Except .x and .f, other arguments are
 #'   optional and control the parallelization processes. They will be handled
-#'   to foreeach function and the selected forreach adaptor.
+#'   to foreach function and the selected forreach adaptor.
 #'
 #' Note that except cores, cluster_type, and adaptor, documentation of other
 #'   arguments, return section, and examples section are automatically imported
@@ -37,7 +37,7 @@
 #' @export
 pa_imap <- function(.x, .f,
                     cores = NULL,
-                    adaptor = "DoParallel", cluster_type = NULL,
+                    adaptor = "doParallel", cluster_type = NULL,
                     .export = NULL, .packages = NULL, .noexport = NULL,
                     .errorhandling = "stop",
                     .inorder = TRUE,
@@ -70,7 +70,7 @@ pa_imap <- function(.x, .f,
 #' @export
 pa_imap_lgl <- function(.x, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -103,7 +103,7 @@ pa_imap_lgl <- function(.x, .f,
 #' @export
 pa_imap_int <- function(.x, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -136,7 +136,7 @@ pa_imap_int <- function(.x, .f,
 #' @export
 pa_imap_dbl <- function(.x, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -169,7 +169,7 @@ pa_imap_dbl <- function(.x, .f,
 #' @export
 pa_imap_chr <- function(.x, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -202,7 +202,7 @@ pa_imap_chr <- function(.x, .f,
 #' @export
 pa_imap_df <- function(.x, .f,
                        cores = NULL,
-                       adaptor = "DoParallel", cluster_type = NULL,
+                       adaptor = "doParallel", cluster_type = NULL,
                        .export = NULL, .packages = NULL, .noexport = NULL,
                        .errorhandling = "stop",
                        .inorder = TRUE,
@@ -238,7 +238,7 @@ pa_imap_df <- function(.x, .f,
 #' @export
 pa_imap_dfr <- function(.x, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -274,7 +274,7 @@ pa_imap_dfr <- function(.x, .f,
 #' @export
 pa_imap_dfc <- function(.x, .f,
                         cores = NULL,
-                        adaptor = "DoParallel", cluster_type = NULL,
+                        adaptor = "doParallel", cluster_type = NULL,
                         .export = NULL, .packages = NULL, .noexport = NULL,
                         .errorhandling = "stop",
                         .inorder = TRUE,
@@ -310,7 +310,7 @@ pa_imap_dfc <- function(.x, .f,
 # #' @export
 # pa_imap_raw <- function(.x, .f,
 #                         cores = NULL,
-#                         adaptor = "DoParallel", cluster_type = NULL,
+#                         adaptor = "doParallel", cluster_type = NULL,
 #                         .export = NULL, .packages = NULL, .noexport = NULL,
 #                         .errorhandling = "stop",
 #                         .inorder = TRUE,
