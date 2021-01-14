@@ -1,10 +1,10 @@
 pa_map2 <- function(.x, .y, .f,
-                   cores = NULL, cluster_type = NULL,
-                   adaptor = "DoParallel",
-                   .export = NULL, .packages = NULL, .noexport = NULL,
-                   .errorhandling = "stop",
-                   .inorder = TRUE,
-                   .verbose = FALSE) {
+                    cores = NULL, cluster_type = NULL,
+                    adaptor = "DoParallel",
+                    .export = NULL, .packages = NULL, .noexport = NULL,
+                    .errorhandling = "stop",
+                    .inorder = TRUE,
+                    .verbose = FALSE) {
 
   int_fun <- quote(purrr::map2(x$.x, x$.y, .f))
 
@@ -31,12 +31,12 @@ pa_map2 <- function(.x, .y, .f,
 
 
 pa_map2_lgl <- function(.x, .y, .f,
-                       cores = NULL, cluster_type = NULL,
-                       adaptor = "DoParallel",
-                       .export = NULL, .packages = NULL, .noexport = NULL,
-                       .errorhandling = "stop",
-                       .inorder = TRUE,
-                       .verbose = FALSE) {
+                        cores = NULL, cluster_type = NULL,
+                        adaptor = "DoParallel",
+                        .export = NULL, .packages = NULL, .noexport = NULL,
+                        .errorhandling = "stop",
+                        .inorder = TRUE,
+                        .verbose = FALSE) {
 
   int_fun <- quote(purrr::map2_lgl(x$.x, x$.y, .f))
 
@@ -62,12 +62,12 @@ pa_map2_lgl <- function(.x, .y, .f,
 }
 
 pa_map2_int <- function(.x, .y, .f,
-                       cores = NULL, cluster_type = NULL,
-                       adaptor = "DoParallel",
-                       .export = NULL, .packages = NULL, .noexport = NULL,
-                       .errorhandling = "stop",
-                       .inorder = TRUE,
-                       .verbose = FALSE) {
+                        cores = NULL, cluster_type = NULL,
+                        adaptor = "DoParallel",
+                        .export = NULL, .packages = NULL, .noexport = NULL,
+                        .errorhandling = "stop",
+                        .inorder = TRUE,
+                        .verbose = FALSE) {
 
   int_fun <- quote(purrr::map2_int(x$.x, x$.y, .f))
 
@@ -93,12 +93,12 @@ pa_map2_int <- function(.x, .y, .f,
 }
 
 pa_map2_dbl <- function(.x, .y, .f,
-                       cores = NULL, cluster_type = NULL,
-                       adaptor = "DoParallel",
-                       .export = NULL, .packages = NULL, .noexport = NULL,
-                       .errorhandling = "stop",
-                       .inorder = TRUE,
-                       .verbose = FALSE) {
+                        cores = NULL, cluster_type = NULL,
+                        adaptor = "DoParallel",
+                        .export = NULL, .packages = NULL, .noexport = NULL,
+                        .errorhandling = "stop",
+                        .inorder = TRUE,
+                        .verbose = FALSE) {
 
   int_fun <- quote(purrr::map2_dbl(x$.x, x$.y, .f))
 
@@ -124,12 +124,12 @@ pa_map2_dbl <- function(.x, .y, .f,
 }
 
 pa_map2_chr <- function(.x, .y, .f,
-                       cores = NULL, cluster_type = NULL,
-                       adaptor = "DoParallel",
-                       .export = NULL, .packages = NULL, .noexport = NULL,
-                       .errorhandling = "stop",
-                       .inorder = TRUE,
-                       .verbose = FALSE) {
+                        cores = NULL, cluster_type = NULL,
+                        adaptor = "DoParallel",
+                        .export = NULL, .packages = NULL, .noexport = NULL,
+                        .errorhandling = "stop",
+                        .inorder = TRUE,
+                        .verbose = FALSE) {
 
   int_fun <- quote(purrr::map2_chr(x$.x, x$.y, .f))
 
@@ -155,12 +155,12 @@ pa_map2_chr <- function(.x, .y, .f,
 }
 
 pa_map2_df <- function(.x, .y, .f,
-                      cores = NULL, cluster_type = NULL,
-                      adaptor = "DoParallel",
-                      .export = NULL, export_packgs = NULL, .noexport = NULL,
-                      .errorhandling = "stop",
-                      .inorder = TRUE,
-                      .verbose = FALSE) {
+                       cores = NULL, cluster_type = NULL,
+                       adaptor = "DoParallel",
+                       .export = NULL, .packages = NULL, .noexport = NULL,
+                       .errorhandling = "stop",
+                       .inorder = TRUE,
+                       .verbose = FALSE) {
   if (!requireNamespace("dplyr", quietly = TRUE)) {
     stop("`map_df()` requires dplyr.")
   }
@@ -181,7 +181,7 @@ pa_map2_df <- function(.x, .y, .f,
                          .multicombine = TRUE,
                          .maxcombine = NULL,
                          .errorhandling = .errorhandling,
-                         export_packgs = export_packgs,
+                         .packages = .packages,
                          .export = .export,
                          .noexport = .noexport,
                          .verbose = .verbose)
@@ -189,12 +189,12 @@ pa_map2_df <- function(.x, .y, .f,
 }
 
 pa_map2_dfr <- function(.x, .y, .f,
-                       cores = NULL, cluster_type = NULL,
-                       adaptor = "DoParallel",
-                       .export = NULL, export_packgs = NULL, .noexport = NULL,
-                       .errorhandling = "stop",
-                       .inorder = TRUE,
-                       .verbose = FALSE) {
+                        cores = NULL, cluster_type = NULL,
+                        adaptor = "DoParallel",
+                        .export = NULL, .packages = NULL, .noexport = NULL,
+                        .errorhandling = "stop",
+                        .inorder = TRUE,
+                        .verbose = FALSE) {
   if (!requireNamespace("dplyr", quietly = TRUE)) {
     stop("`map_dfr()` requires dplyr.")
   }
@@ -215,7 +215,7 @@ pa_map2_dfr <- function(.x, .y, .f,
                          .multicombine = TRUE,
                          .maxcombine = NULL,
                          .errorhandling = .errorhandling,
-                         export_packgs = export_packgs,
+                         .packages = .packages,
                          .export = .export,
                          .noexport = .noexport,
                          .verbose = .verbose)
@@ -223,12 +223,12 @@ pa_map2_dfr <- function(.x, .y, .f,
 }
 
 pa_map2_dfc <- function(.x, .y, .f,
-                       cores = NULL, cluster_type = NULL,
-                       adaptor = "DoParallel",
-                       .export = NULL, export_packgs = NULL, .noexport = NULL,
-                       .errorhandling = "stop",
-                       .inorder = TRUE,
-                       .verbose = FALSE) {
+                        cores = NULL, cluster_type = NULL,
+                        adaptor = "DoParallel",
+                        .export = NULL, .packages = NULL, .noexport = NULL,
+                        .errorhandling = "stop",
+                        .inorder = TRUE,
+                        .verbose = FALSE) {
   if (!requireNamespace("dplyr", quietly = TRUE)) {
     stop("`map_dfc()` requires dplyr.")
   }
@@ -249,7 +249,7 @@ pa_map2_dfc <- function(.x, .y, .f,
                          .multicombine = TRUE,
                          .maxcombine = NULL,
                          .errorhandling = .errorhandling,
-                         export_packgs = export_packgs,
+                         .packages = .packages,
                          .export = .export,
                          .noexport = .noexport,
                          .verbose = .verbose)
@@ -259,7 +259,7 @@ pa_map2_dfc <- function(.x, .y, .f,
 # pa_map2_raw <- function(.x, .y, .f,
 #                        cores = NULL, cluster_type = NULL,
 #                        adaptor = "DoParallel",
-#                        .export = NULL, export_packgs = NULL, .noexport = NULL,
+#                        .export = NULL, .packages = NULL, .noexport = NULL,
 #                        .errorhandling = "stop",
 #                        .inorder = TRUE,
 #                        .verbose = FALSE) {
@@ -280,7 +280,7 @@ pa_map2_dfc <- function(.x, .y, .f,
 #                          .multicombine = TRUE,
 #                          .maxcombine = NULL,
 #                          .errorhandling = .errorhandling,
-#                          export_packgs = export_packgs,
+#                          .packages = .packages,
 #                          .export = .export,
 #                          .noexport = .noexport,
 #                          .verbose = .verbose)

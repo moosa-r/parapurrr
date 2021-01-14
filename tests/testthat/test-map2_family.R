@@ -39,5 +39,5 @@ test_that("pa_map2_dfr works", {
 
 test_that("pa_map2_dfc works", {
   expect_identical(purrr::map2_dfc(x, y, ~.x * .y),
-                   parapurrr::pa_map2_dfc(x, y, ~.x * .y, verbose = TRUE))
+                   parapurrr::pa_map2_dfc(x, y, ~.x * .y, .verbose = TRUE))
 })

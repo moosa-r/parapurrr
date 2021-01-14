@@ -21,6 +21,6 @@
           pa_cluster_type = switch(.Platform$OS.type,
                                    "windows" = "PSOCK",
                                    "unix" = "FORK")
-          )
+  )
   invisible()
 }
