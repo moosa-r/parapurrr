@@ -140,7 +140,14 @@
            parallel::stopCluster(active_cl$cluster)},
          "doSNOW" = {
            snow::stopCluster(active_cl$cluster)
-         })
+         },
+         "doFuture" = {
+           if (inherits(active_cl$cluster, "cluster")) {
+             parallel::stopCluster(active_cl$cluster)
+           }
+           future::plan("sequential")
+         }
+  )
 
   invisible()
 }
