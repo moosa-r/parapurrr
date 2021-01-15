@@ -23,7 +23,11 @@
                                                        "unix" = "FORK"),
                                  "doSNOW" = switch(.Platform$OS.type,
                                                    "windows" = "SOCK",
-                                                   "unix" = "MPI"))
+                                                   "unix" = "MPI"),
+                                 "doFuture" = switch(.Platform$OS.type,
+                                                     "windows" = "multisession",
+                                                     "unix" = "multicore")
+          )
   )
   invisible()
 }
