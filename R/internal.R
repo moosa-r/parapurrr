@@ -68,17 +68,18 @@
 #' Register Clusters necessary for foreach function. currently only doParallel
 #'   adaptor is supported, other adaptors will be implemented in the future.
 #' @param adaptor foreach adaptor. Currently, parapurr supports: \enumerate{
-#' \item"doParallel"\item"doSNOW"}
+#' \item "doParallel" \item "doSNOW" \item "doFuture"}
 #' @param cores number of cores (i.e. workers)
-#' @param cluster_type PSOCK (default for Windows) or FORK (default for Unix)
+#' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
+#'   "multicore", "cluster_FORK", or "cluster_PSOCK"
 #'
 #' @return a list containing cluster object (to be used later for terminating
 #'   the cluster) and the adaptor name.
 #' @noRd
 .pa_reg_clusters <- function(adaptor, cores, cluster_type) {
   if (!(length(adaptor) == 1L &&
-        match(adaptor, c("doParallel", "doSNOW"), nomatch = 0) > 0) ) {
-    stop("adaptor should be 'doParallel' or 'doSNOW'.", call. = FALSE)
+        match(adaptor, c("doParallel", "doSNOW", "doFuture"), nomatch = 0) > 0) ) {
+    stop("adaptor should be 'doParallel', 'doSNOW' or 'doFuture'.", call. = FALSE)
   }
   switch(adaptor,
          "doParallel" = {
@@ -98,6 +99,27 @@
            cl <- snow::makeCluster(spec = cores,
                                    type = cluster_type)
            doSNOW::registerDoSNOW(cl)
+         },
+         "doFuture" = {
+           if (!requireNamespace("doFuture", quietly = TRUE)) {
+             stop("Package 'doFuture' is required to be installed.")
+           }
+           doFuture::registerDoFuture()
+           if (cluster_type == "cluster_FORK") {
+             cl <- parallel::makeCluster(spec = cores,
+                                         type = "FORK")
+             future::plan(strategy = "cluster",
+                          workers = cl)
+           } else if (cluster_type == "cluster_PSOCK") {
+             cl <- parallel::makeCluster(spec = cores,
+                                         type = "PSOCK")
+             future::plan(strategy = "cluster",
+                          workers = cl)
+           } else {
+             cl <- NA
+             future::plan(strategy = cluster_type,
+                          workers = cores)
+           }
          }
   )
   return(list("cluster" = cl,
