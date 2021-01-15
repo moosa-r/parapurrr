@@ -22,8 +22,10 @@ Imports:
     parallel,
     purrr
 Suggests:
+    doFuture,
     doSNOW,
     dplyr,
+    future,
     rmarkdown,
     knitr,
     snow,
