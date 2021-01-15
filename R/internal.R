@@ -2,9 +2,12 @@
 #'
 #' Handle cores (worker) numbers, cluster type and splitting indexes of input
 #'   vector.
+#'
 #' @param x_length The length of input atomic vector or list
-#' @param cores  Number of workers (default: Core numbers - 1)
-#' @param cluster_type PSOCK (default for Windows) or FORK (default for Unix)
+#' @param cores Number of workers (default: Core numbers - 1)
+#' @param adaptor foreach adaptor, current options: doParallel, doSNOW, doFuture
+#' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
+#'   "multicore", "cluster_FORK", or "cluster_PSOCK"
 #'
 #' @return a list with core numbers, cluster type and splitting indexes to be
 #'   handled to downstream internal functions.
@@ -24,13 +27,19 @@
       if (getOption("pa_os") == "windows" && cluster_type == "FORK") {
         stop("Fork cluster type is not supported in Windows.", call. = FALSE)
       }
-
     } else if (adaptor == "doSNOW") {
       if (match(cluster_type, c("MPI", "NWS", "SOCK"), nomatch = 0) == 0 ) {
         stop("In doSNOW, cluster_type should be 'SOCK', 'MPI', or 'NWS'.", call. = FALSE)
       }
       if (getOption("pa_os") == "windows" && (cluster_type == "MPI" || cluster_type == "NWS")) {
         stop(cluster_type, " cluster type is not supported in Windows.", call. = FALSE)
+      }
+    } else if (adaptor == "doFuture") {
+      if (match(cluster_type, c("multisession", "multicore", "cluster_FORK", "cluster_PSOCK"), nomatch = 0) == 0 ) {
+        stop("In doFuture, cluster_type (i.e. strategy) should be 'multisession', 'multicore', 'cluster_FORK' or 'cluster_PSOCK'.", call. = FALSE)
+      }
+      if (getOption("pa_os") == "windows" && (cluster_type == "multicore" || cluster_type == "cluster_FORK")) {
+        stop(cluster_type, " strategy is not supported in Windows.", call. = FALSE)
       }
     }
   }
