@@ -23,10 +23,12 @@ Imports:
     purrr
 Suggests:
     doFuture,
+    doMPI,
     doSNOW,
     dplyr,
     future,
     rmarkdown,
+    Rmpi,
     knitr,
     snow,
     testthat (>= 3.0.0)
