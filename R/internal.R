@@ -147,6 +147,7 @@
          "doParallel" = {
            doParallel::stopImplicitCluster()
            parallel::stopCluster(active_cl$cluster)
+         },
          "doSNOW" = {
            snow::stopCluster(active_cl$cluster)
          },
@@ -177,6 +178,7 @@
 #' @param adaptor refer to \code{\link{.pa_reg_clusters}}
 #' @param cores refer to \code{\link{.pa_reg_clusters}}
 #' @param cluster_type refer to \code{\link{.pa_reg_clusters}}
+#' @param auto_export Should variables in the calling environment be exported?
 #' @param .combine refer to \code{\link[foreach]{foreach}}
 #' @param .init refer to \code{\link[foreach]{foreach}}
 #' @param .final refer to \code{\link[foreach]{foreach}}
@@ -200,6 +202,7 @@
                          adaptor,
                          cores,
                          cluster_type,
+                         auto_export,
                          .combine,
                          .init,
                          .final,
@@ -242,6 +245,10 @@
   if (!is.null(.noexport) && !is.character(.noexport)) {
     stop(".noexport should be a character vector.")
   }
+  if (!(length(auto_export) == 1L && !is.na(auto_export) && is.logical(auto_export))) {
+    stop("auto_export should be 'TRUE' or 'FALSE'.", call. = FALSE)
+  }
+
   # cluster arguments
   int_args <- .pa_args(x_length = length(.x),
                        cores = cores,
@@ -262,6 +269,12 @@
                          cores = int_args$cores,
                          cluster_type = int_args$cluster_type)
   on.exit(.pa_stop_clusters(cl))
+  # update export:
+  if (auto_export) {
+    .export = unique(c(.export, ls(envir = parent.frame(2)), ".f"))
+  } else {
+    .export = c(.export, ".f")
+  }
   # perform!
   output <- foreach::foreach(x = foreach_input,
                              .combine = .combine,
@@ -274,7 +287,7 @@
                                                int_args$cores),
                              .errorhandling = .errorhandling,
                              .packages = .packages,
-                             .export = c(.export, ".f"),
+                             .export = .export,
                              .noexport = c(.noexport,
                                            ".x",
                                            ".y",

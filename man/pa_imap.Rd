@@ -17,6 +17,7 @@ pa_imap(
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
+  auto_export = TRUE,
   .export = NULL,
   .packages = NULL,
   .noexport = NULL,
@@ -31,6 +32,7 @@ pa_imap_lgl(
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
+  auto_export = TRUE,
   .export = NULL,
   .packages = NULL,
   .noexport = NULL,
@@ -45,6 +47,7 @@ pa_imap_int(
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
+  auto_export = TRUE,
   .export = NULL,
   .packages = NULL,
   .noexport = NULL,
@@ -59,6 +62,7 @@ pa_imap_dbl(
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
+  auto_export = TRUE,
   .export = NULL,
   .packages = NULL,
   .noexport = NULL,
@@ -73,6 +77,7 @@ pa_imap_chr(
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
+  auto_export = TRUE,
   .export = NULL,
   .packages = NULL,
   .noexport = NULL,
@@ -87,6 +92,7 @@ pa_imap_df(
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
+  auto_export = TRUE,
   .export = NULL,
   .packages = NULL,
   .noexport = NULL,
@@ -101,6 +107,7 @@ pa_imap_dfr(
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
+  auto_export = TRUE,
   .export = NULL,
   .packages = NULL,
   .noexport = NULL,
@@ -115,6 +122,7 @@ pa_imap_dfc(
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
+  auto_export = TRUE,
   .export = NULL,
   .packages = NULL,
   .noexport = NULL,
@@ -172,6 +180,11 @@ adaptor. Note that allowed values for this argument depends on the
     "cluster_FORK", "cluster_PSOCK"
   }
 }}
+
+\item{auto_export}{(default = TRUE) Should variables in the function's
+calling environment be exported to workers? Default is set to TRUE for
+convenience; But to improve the performance, consider turning auto_export
+off and manually setting the exported variables using .export argument.}
 
 \item{.export}{character vector of variables to export.
 This can be useful when accessing a variable that isn't defined in the
