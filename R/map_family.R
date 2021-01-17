@@ -15,7 +15,8 @@
 #' @param cores (optional) Number of cores (i.e. workers) to be used. Default
 #'   is: your computer CPU cores - 1
 #' @param adaptor The foreach adaptor to be used. Available options are:
-#'   \itemize{\item "doParallel" (default) \item "doSNOW" \item "doFuture"}
+#'   \itemize{\item "doParallel" (default) \item "doMPI" \item "doSNOW"
+#'   \item "doFuture"}
 #' @param cluster_type The Clusters architecture to be used with the selected
 #'   adaptor. Note that allowed values for this argument depends on the
 #'   "adaptor" argument: \enumerate{
@@ -23,6 +24,10 @@
 #'     \itemize{
 #'       \item in windows OS: "PSOCK" (default for Windows)
 #'       \item in Unix-based OS: "FORK" (default for Unix), "PSOCK"
+#'       }
+#'   \item if adaptor is doMPI:
+#'     \itemize{
+#'       \item No cluster_type options here, let cluster_type be NULL
 #'       }
 #'   \item if adaptor is "doSNOW":
 #'     \itemize{
