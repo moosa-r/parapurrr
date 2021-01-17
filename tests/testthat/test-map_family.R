@@ -1,7 +1,7 @@
-n_cores = 2
+n_cores <- 2
 
-x = as.list(as.integer(1:5))
-names(x) = paste0("element_", 1:5)
+x <- as.list(as.integer(1:5))
+names(x) <- paste0("element_", 1:5)
 
 test_that("pa_map works", {
   expect_identical(purrr::map(x, sqrt),

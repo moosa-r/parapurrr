@@ -1,8 +1,8 @@
-n_cores = 2
+n_cores <- 2
 
-x = as.list(as.integer(1:5))
-y = as.list(as.integer(6:10))
-names(x) = paste0("element_", 1:5)
+x <- as.list(as.integer(1:5))
+y <- as.list(as.integer(6:10))
+names(x) <- paste0("element_", 1:5)
 
 test_that("pa_map2 works", {
   expect_identical(purrr::map2(x, y, ~.x * .y),

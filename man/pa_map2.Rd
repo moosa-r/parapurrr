@@ -192,7 +192,8 @@ adaptor. Note that allowed values for this argument depends on the
   }
 \item if adaptor is "doFuture":
   \itemize{
-  \item in windows OS: "multisession" (default for Windows), "cluster_PSOCK"
+  \item in windows OS: "multisession" (default for Windows),
+    "cluster_PSOCK"
   \item in Unix-based OS: "multicore" (default for Unix), "multisession",
     "cluster_FORK", "cluster_PSOCK"
   }
@@ -249,9 +250,9 @@ input is length 1, it will be recycled to the length of the longest.
 \description{
 The syntax and the logic of pa_map2* functions are the identical to purrr's
   map functions. Please refer to \code{\link[purrr]{map2}} if you are not
-  familiar with purrr mapping style. Except .x, .y, and .f, other arguments are
-  optional and control the parallelization processes. They will be handled
-  to foreach function and the selected forreach adaptor.
+  familiar with purrr mapping style. Except .x, .y, and .f, other arguments
+  are optional and control the parallelization processes. They will be
+  handled to foreach function and the selected foreach adaptor.
 }
 \details{
 Note that except cores, cluster_type, and adaptor, documentation of other

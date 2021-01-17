@@ -2,9 +2,9 @@
 #'
 #' The syntax and the logic of pa_map2* functions are the identical to purrr's
 #'   map functions. Please refer to \code{\link[purrr]{map2}} if you are not
-#'   familiar with purrr mapping style. Except .x, .y, and .f, other arguments are
-#'   optional and control the parallelization processes. They will be handled
-#'   to foreach function and the selected forreach adaptor.
+#'   familiar with purrr mapping style. Except .x, .y, and .f, other arguments
+#'   are optional and control the parallelization processes. They will be
+#'   handled to foreach function and the selected foreach adaptor.
 #'
 #' Note that except cores, cluster_type, and adaptor, documentation of other
 #'   arguments, return section, and examples section are automatically imported

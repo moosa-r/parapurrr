@@ -1,7 +1,7 @@
-n_cores = 2
+n_cores <- 2
 
-x = as.list(as.integer(1:5))
-names(x) = paste0("element_", 1:5)
+x <- as.list(as.integer(1:5))
+names(x) <- paste0("element_", 1:5)
 
 test_that("doParallel works on windows", {
   expect_error(parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doParallel", cluster_type = "PSOCK"), NA)

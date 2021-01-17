@@ -36,7 +36,8 @@
 #'     }
 #'   \item if adaptor is "doFuture":
 #'     \itemize{
-#'     \item in windows OS: "multisession" (default for Windows), "cluster_PSOCK"
+#'     \item in windows OS: "multisession" (default for Windows),
+#'       "cluster_PSOCK"
 #'     \item in Unix-based OS: "multicore" (default for Unix), "multisession",
 #'       "cluster_FORK", "cluster_PSOCK"
 #'     }

@@ -33,7 +33,7 @@
            "doMPI" = {
              if (!is.null(cluster_type)) {
                warning("Provided cluster_type is ignored when using doMPI.")
-               cluster_type = NULL
+               cluster_type <- NULL
              }
            },
            "doParallel" = {
@@ -47,19 +47,29 @@
              }
            },
            "doSNOW" = {
-             if (match(cluster_type, c("MPI", "NWS", "SOCK"), nomatch = 0) == 0 ) {
-               stop("In doSNOW, cluster_type should be 'SOCK', 'MPI', or 'NWS'.", call. = FALSE)
+             if (match(cluster_type,
+                       c("MPI", "NWS", "SOCK"),
+                       nomatch = 0) == 0 ) {
+               stop("In doSNOW, cluster_type should be 'SOCK', 'MPI', or 'NWS'.",
+                    call. = FALSE)
              }
            },
            "doFuture" = {
-             if (match(cluster_type, c("multisession", "multicore", "cluster_FORK", "cluster_PSOCK"), nomatch = 0) == 0 ) {
+             if (match(cluster_type,
+                       c("multisession", "multicore",
+                         "cluster_FORK", "cluster_PSOCK"),
+                       nomatch = 0) == 0 ) {
                stop("In doFuture, cluster_type (i.e. strategy) should be 'multisession', 'multicore', 'cluster_FORK' or 'cluster_PSOCK'.", call. = FALSE)
              }
-             if (.Platform$OS.type == "windows" && (cluster_type == "multicore" || cluster_type == "cluster_FORK")) {
-               stop(cluster_type, " strategy is not supported in Windows.", call. = FALSE)
+             if (.Platform$OS.type == "windows" &&
+                 (cluster_type == "multicore" ||
+                  cluster_type == "cluster_FORK")) {
+               stop(cluster_type, " strategy is not supported in Windows.",
+                    call. = FALSE)
              }
            },
-           stop("Adaptor should be 'doMPI', 'doParallel', 'doSNOW' or 'doFuture'.", call. = FALSE)
+           stop("Adaptor should be 'doMPI', 'doParallel', 'doSNOW' or 'doFuture'.",
+                call. = FALSE)
     )
   }
 
@@ -144,7 +154,8 @@
                           workers = cores)
            }
          },
-         stop("Adaptor should be 'doParallel', 'doSNOW' or 'doFuture'.", call. = FALSE)
+         stop("Adaptor should be 'doParallel', 'doSNOW' or 'doFuture'.",
+              call. = FALSE)
   )
   return(list("cluster" = cl,
               "adaptor" = adaptor,
@@ -265,7 +276,9 @@
   if (!is.null(.noexport) && !is.character(.noexport)) {
     stop(".noexport should be a character vector.")
   }
-  if (!(length(auto_export) == 1L && !is.na(auto_export) && is.logical(auto_export))) {
+  if (!(length(auto_export) == 1L &&
+        !is.na(auto_export) &&
+        is.logical(auto_export))) {
     stop("auto_export should be 'TRUE' or 'FALSE'.", call. = FALSE)
   }
 
@@ -291,9 +304,9 @@
   on.exit(.pa_stop_clusters(cl))
   # update export:
   if (auto_export) {
-    .export = unique(c(.export, ls(envir = parent.frame(2)), ".f"))
+    .export <- unique(c(.export, ls(envir = parent.frame(2)), ".f"))
   } else {
-    .export = c(.export, ".f")
+    .export <- c(.export, ".f")
   }
   # perform!
   output <- foreach::foreach(x = foreach_input,
@@ -327,7 +340,7 @@
                                            ".noexport",
                                            ".verbose"),
                              .verbose = .verbose) %dopar% {
-                               output = eval(int_fun)
+                               output <- eval(int_fun)
                                return(output)
                              }
   return(output)

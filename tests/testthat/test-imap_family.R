@@ -1,7 +1,7 @@
-n_cores = 2
+n_cores <- 2
 
-x = runif(5, min = 1, 100)
-names(x) = runif(5, min = 1, 100)
+x <- runif(5, min = 1, 100)
+names(x) <- runif(5, min = 1, 100)
 
 test_that("pa_imap works", {
   expect_identical(purrr::imap(x, ~paste0(.x,.y)),
