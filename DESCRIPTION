@@ -27,6 +27,7 @@ Suggests:
     doSNOW,
     dplyr,
     future,
+    nws,
     rmarkdown,
     Rmpi,
     knitr,
