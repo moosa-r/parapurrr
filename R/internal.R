@@ -87,7 +87,7 @@
 #' Register Clusters necessary for foreach function. currently only doParallel
 #'   adaptor is supported, other adaptors will be implemented in the future.
 #' @param adaptor foreach adaptor. Currently, parapurr supports: \enumerate{
-#' \item "doParallel" \item "doSNOW" \item "doFuture"}
+#' \item "doMPI" \item "doParallel" \item "doSNOW" \item "doFuture"}
 #' @param cores number of cores (i.e. workers)
 #' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
@@ -97,6 +97,14 @@
 #' @noRd
 .pa_reg_clusters <- function(adaptor, cores, cluster_type) {
   switch(adaptor,
+         "doMPI" = {
+           if (!requireNamespace("doMPI", quietly = TRUE)) {
+             stop("Package 'doMPI' is required to be installed.")
+           }
+           cl <- doMPI::startMPIcluster(count = cores,
+                                        verbose = FALSE)
+           doMPI::registerDoMPI(cl)
+         },
          "doParallel" = {
            if (!requireNamespace("doParallel", quietly = TRUE)) {
              stop("Package 'doParallel' is required to be installed.")
