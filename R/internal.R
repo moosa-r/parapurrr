@@ -160,6 +160,10 @@
 #' @noRd
 .pa_stop_clusters <- function(active_cl) {
   switch(active_cl$adaptor,
+         "doMPI" = {
+           doMPI::closeCluster(active_cl$cluster)
+           message("Please run `Rmpi::mpi.finalize() at the end of your script to properly terminate MPI execution enviroment.")
+         },
          "doParallel" = {
            doParallel::stopImplicitCluster()
            parallel::stopCluster(active_cl$cluster)
