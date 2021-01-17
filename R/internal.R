@@ -5,7 +5,8 @@
 #'
 #' @param x_length The length of input atomic vector or list
 #' @param cores Number of workers (default: Core numbers - 1)
-#' @param adaptor foreach adaptor, current options: doParallel, doSNOW, doFuture
+#' @param adaptor foreach adaptor, current options: doMPI, doParallel (default),
+#'   doSNOW, doFuture
 #' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
 #'
@@ -19,6 +20,7 @@
   ## handle cluster type
   if (is.null(cluster_type)) {
     cluster_type <- switch(adaptor,
+                           "doMPI" = NULL,
                            "doParallel" = switch(.Platform$OS.type,
                                                  "windows" = "PSOCK",
                                                  "unix" = "FORK"),
@@ -28,6 +30,12 @@
                                                "unix" = "multicore"))
   } else {
     switch(adaptor,
+           "doMPI" = {
+             if (!is.null(cluster_type)) {
+               warning("Provided cluster_type is ignored when using doMPI.")
+               cluster_type = NULL
+             }
+           },
            "doParallel" = {
              if (match(cluster_type, c("FORK", "PSOCK"), nomatch = 0) == 0) {
                stop("In doParallel, cluster_type should be 'PSOCK' or 'FORK'.",
@@ -51,7 +59,7 @@
                stop(cluster_type, " strategy is not supported in Windows.", call. = FALSE)
              }
            },
-           stop("Adaptor should be 'doParallel', 'doSNOW' or 'doFuture'.", call. = FALSE)
+           stop("Adaptor should be 'doMPI', 'doParallel', 'doSNOW' or 'doFuture'.", call. = FALSE)
     )
   }
 
