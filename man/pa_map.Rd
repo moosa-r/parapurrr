@@ -158,7 +158,8 @@ present, the value of \code{.default} will be returned.}
 is: your computer CPU cores - 1}
 
 \item{adaptor}{The foreach adaptor to be used. Available options are:
-\itemize{\item "doParallel" (default) \item "doSNOW" \item "doFuture"}}
+\itemize{\item "doParallel" (default) \item "doMPI" \item "doSNOW"
+\item "doFuture"}}
 
 \item{cluster_type}{The Clusters architecture to be used with the selected
 adaptor. Note that allowed values for this argument depends on the
@@ -167,6 +168,10 @@ adaptor. Note that allowed values for this argument depends on the
   \itemize{
     \item in windows OS: "PSOCK" (default for Windows)
     \item in Unix-based OS: "FORK" (default for Unix), "PSOCK"
+    }
+\item if adaptor is doMPI:
+  \itemize{
+    \item No cluster_type options here, let cluster_type be NULL
     }
 \item if adaptor is "doSNOW":
   \itemize{
