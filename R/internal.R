@@ -18,30 +18,41 @@
                      cluster_type = NULL) {
   ## handle cluster type
   if (is.null(cluster_type)) {
-    cluster_type <- getOption("pa_cluster_type")[[adaptor]]
+    cluster_type <- switch(adaptor,
+                           "doParallel" = switch(.Platform$OS.type,
+                                                 "windows" = "PSOCK",
+                                                 "unix" = "FORK"),
+                           "doSNOW" = "SOCK",
+                           "doFuture" = switch(.Platform$OS.type,
+                                               "windows" = "multisession",
+                                               "unix" = "multicore"))
   } else {
-    if (adaptor == "doParallel") {
-      if (match(cluster_type, c("FORK", "PSOCK"), nomatch = 0) == 0) {
-        stop("In doParallel, cluster_type should be 'PSOCK' or 'FORK'.", call. = FALSE)
-      }
-      if (getOption("pa_os") == "windows" && cluster_type == "FORK") {
-        stop("Fork cluster type is not supported in Windows.", call. = FALSE)
-      }
-    } else if (adaptor == "doSNOW") {
-      if (match(cluster_type, c("MPI", "NWS", "SOCK"), nomatch = 0) == 0 ) {
-        stop("In doSNOW, cluster_type should be 'SOCK', 'MPI', or 'NWS'.", call. = FALSE)
-      }
-      if (getOption("pa_os") == "windows" && (cluster_type == "MPI" || cluster_type == "NWS")) {
-        stop(cluster_type, " cluster type is not supported in Windows.", call. = FALSE)
-      }
-    } else if (adaptor == "doFuture") {
-      if (match(cluster_type, c("multisession", "multicore", "cluster_FORK", "cluster_PSOCK"), nomatch = 0) == 0 ) {
-        stop("In doFuture, cluster_type (i.e. strategy) should be 'multisession', 'multicore', 'cluster_FORK' or 'cluster_PSOCK'.", call. = FALSE)
-      }
-      if (getOption("pa_os") == "windows" && (cluster_type == "multicore" || cluster_type == "cluster_FORK")) {
-        stop(cluster_type, " strategy is not supported in Windows.", call. = FALSE)
-      }
-    }
+    switch(adaptor,
+           "doParallel" = {
+             if (match(cluster_type, c("FORK", "PSOCK"), nomatch = 0) == 0) {
+               stop("In doParallel, cluster_type should be 'PSOCK' or 'FORK'.",
+                    call. = FALSE)
+             }
+             if (.Platform$OS.type == "windows" && cluster_type == "FORK") {
+               stop("Fork cluster type is not supported in Windows.",
+                    call. = FALSE)
+             }
+           },
+           "doSNOW" = {
+             if (match(cluster_type, c("MPI", "NWS", "SOCK"), nomatch = 0) == 0 ) {
+               stop("In doSNOW, cluster_type should be 'SOCK', 'MPI', or 'NWS'.", call. = FALSE)
+             }
+           },
+           "doFuture" = {
+             if (match(cluster_type, c("multisession", "multicore", "cluster_FORK", "cluster_PSOCK"), nomatch = 0) == 0 ) {
+               stop("In doFuture, cluster_type (i.e. strategy) should be 'multisession', 'multicore', 'cluster_FORK' or 'cluster_PSOCK'.", call. = FALSE)
+             }
+             if (.Platform$OS.type == "windows" && (cluster_type == "multicore" || cluster_type == "cluster_FORK")) {
+               stop(cluster_type, " strategy is not supported in Windows.", call. = FALSE)
+             }
+           },
+           stop("Adaptor should be 'doParallel', 'doSNOW' or 'doFuture'.", call. = FALSE)
+    )
   }
 
   ### handle cores
@@ -77,10 +88,6 @@
 #'   the cluster) and the adaptor name.
 #' @noRd
 .pa_reg_clusters <- function(adaptor, cores, cluster_type) {
-  if (!(length(adaptor) == 1L &&
-        match(adaptor, c("doParallel", "doSNOW", "doFuture"), nomatch = 0) > 0) ) {
-    stop("adaptor should be 'doParallel', 'doSNOW' or 'doFuture'.", call. = FALSE)
-  }
   switch(adaptor,
          "doParallel" = {
            if (!requireNamespace("doParallel", quietly = TRUE)) {
@@ -120,10 +127,12 @@
              future::plan(strategy = cluster_type,
                           workers = cores)
            }
-         }
+         },
+         stop("Adaptor should be 'doParallel', 'doSNOW' or 'doFuture'.", call. = FALSE)
   )
   return(list("cluster" = cl,
-              "adaptor" = adaptor))
+              "adaptor" = adaptor,
+              "cluster_type" = cluster_type))
 }
 
 
@@ -137,7 +146,7 @@
   switch(active_cl$adaptor,
          "doParallel" = {
            doParallel::stopImplicitCluster()
-           parallel::stopCluster(active_cl$cluster)},
+           parallel::stopCluster(active_cl$cluster)
          "doSNOW" = {
            snow::stopCluster(active_cl$cluster)
          },
