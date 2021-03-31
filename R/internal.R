@@ -1,3 +1,32 @@
+#' Check User-Provided Splitter
+#'
+#' Check if the custom splitter provided by the user is valid; i.e. it is a
+#'   list with numeric elements and its elements have a one-to-one
+#'   correspondence with the indexes of .x elements.
+#'
+#' @param x_length Length of .x argument
+#' @param splitter User-provided splitter. A list with numeric vectors.
+#'
+#' @return Nothing! If the splitter is not valid, code execution will be
+#'   stopped.
+#' @noRd
+splitter_check <- function(x_length, splitter) {
+  ss = unlist(splitter)
+  if (!is.list(splitter) ||
+      !is.numeric(ss)) {
+    stop("Splitter should be a list where each of its elements is a numeric vector.",
+         call. = FALSE)
+  }
+  ss = as.integer(ss)
+  if (length(ss) != x_length ||
+      !setequal(ss, seq_len(x_length))
+  ) {
+    stop("Splitter contents should have a one-to-one correspondence with the indexes of .x elements.",
+         call. = FALSE)
+  }
+  invisible()
+}
+
 #' Handle Main Parallel Arguments
 #'
 #' Handle cores (worker) numbers, cluster type and splitting indexes of input
@@ -9,6 +38,7 @@
 #'   doSNOW, doFuture
 #' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
+#' @param splitter User-provided splitter. A list with numeric vectors.
 #'
 #' @return a list with core numbers, cluster type and splitting indexes to be
 #'   handled to downstream internal functions.
@@ -16,7 +46,8 @@
 .pa_args <- function(x_length,
                      cores = NULL,
                      adaptor = "doParallel",
-                     cluster_type = NULL) {
+                     cluster_type = NULL,
+                     splitter = NULL) {
   ## handle cluster type
   if (is.null(cluster_type)) {
     cluster_type <- switch(adaptor,
@@ -73,18 +104,29 @@
     )
   }
 
-  ### handle cores
-  cores <- min(ifelse(is.numeric(cores),
-                      yes = cores,
-                      no = getOption("pa_cores")),
-               x_length)
-
   ### divide the input
-  if (cores <= 1) {
-    parts <- list("1" = seq_len(x_length))
+  if (is.null(splitter)) {
+    ### handle cores
+    cores <- min(ifelse(is.numeric(cores),
+                        yes = cores,
+                        no = getOption("pa_cores")),
+                 x_length)
+    if (cores > 1) {
+      parts <- split(x = seq_len(x_length),
+                     f = cut(seq_len(x_length), cores, labels = FALSE))
+    } else {
+      parts <- list("1" = seq_len(x_length))
+    }
   } else {
-    parts <- split(x = seq_len(x_length),
-                   f = cut(seq_len(x_length), cores, labels = FALSE))
+    splitter_check(x_length = x_length, splitter = splitter)
+    parts <- splitter
+    ### handle cores
+    if (is.numeric(cores) && length(splitter) != cores) {
+      warning("Cores and splitter's lengths are inconsistent, using the splitter's length as cores: ", length(splitter),
+              immediate. = TRUE, call. = FALSE)
+    }
+    cores <- length(splitter)
+
   }
 
   return(list("cores" = cores,
@@ -234,6 +276,7 @@
                          cores,
                          cluster_type,
                          auto_export,
+                         splitter,
                          .combine,
                          .init,
                          .final,
@@ -286,7 +329,8 @@
   int_args <- .pa_args(x_length = length(.x),
                        cores = cores,
                        adaptor = adaptor,
-                       cluster_type = cluster_type)
+                       cluster_type = cluster_type,
+                       splitter = splitter)
   # split the input
   foreach_input <- lapply(X = int_args$parts,
                           FUN = function(part_index) {
