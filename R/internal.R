@@ -40,7 +40,7 @@ splitter_check <- function(x_length, splitter) {
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
 #' @param splitter User-provided splitter. A list with numeric vectors.
 #'
-#' @return a list with core numbers, cluster type and splitting indexes to be
+#' @return A list with core numbers, cluster type and splitting indexes to be
 #'   handled to downstream internal functions.
 #' @noRd
 .pa_args <- function(x_length,
@@ -63,12 +63,14 @@ splitter_check <- function(x_length, splitter) {
     switch(adaptor,
            "doMPI" = {
              if (!is.null(cluster_type)) {
-               warning("Provided cluster_type is ignored when using doMPI.")
+               warning("Provided cluster_type is ignored when using doMPI.",
+                       call. = FALSE)
                cluster_type <- NULL
              }
            },
            "doParallel" = {
-             if (match(cluster_type, c("FORK", "PSOCK"), nomatch = 0) == 0) {
+             if (match(cluster_type,
+                       c("FORK", "PSOCK"), nomatch = 0) == 0) {
                stop("In doParallel, cluster_type should be 'PSOCK' or 'FORK'.",
                     call. = FALSE)
              }
@@ -90,7 +92,8 @@ splitter_check <- function(x_length, splitter) {
                        c("multisession", "multicore",
                          "cluster_FORK", "cluster_PSOCK"),
                        nomatch = 0) == 0 ) {
-               stop("In doFuture, cluster_type (i.e. strategy) should be 'multisession', 'multicore', 'cluster_FORK' or 'cluster_PSOCK'.", call. = FALSE)
+               stop("In doFuture, cluster_type (i.e. strategy) should be 'multisession', 'multicore', 'cluster_FORK' or 'cluster_PSOCK'.",
+                    call. = FALSE)
              }
              if (.Platform$OS.type == "windows" &&
                  (cluster_type == "multicore" ||
@@ -144,7 +147,7 @@ splitter_check <- function(x_length, splitter) {
 #' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
 #'
-#' @return a list containing cluster object (to be used later for terminating
+#' @return A list containing cluster object (to be used later for terminating
 #'   the cluster) and the adaptor name.
 #' @noRd
 .pa_reg_clusters <- function(adaptor, cores, cluster_type) {

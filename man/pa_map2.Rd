@@ -212,7 +212,8 @@ handle your input elements to the available cores. The Splitter is a
 list where each of its elements is a numeric vector. Each numeric vector
 corresponds to a core, and the elements of each vector should be indexes
 of .x input's elements; Collectively they should have a one-to-one
-correspondence with .x indexes.}
+correspondence with .x indexes. See the Vignettes for further explanations
+and examples.}
 
 \item{auto_export}{(default = TRUE) Should variables in the function's
 calling environment be exported to workers? Default is set to TRUE for

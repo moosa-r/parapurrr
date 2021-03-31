@@ -81,7 +81,8 @@ handle your input elements to the available cores. The Splitter is a
 list where each of its elements is a numeric vector. Each numeric vector
 corresponds to a core, and the elements of each vector should be indexes
 of .x input's elements; Collectively they should have a one-to-one
-correspondence with .x indexes.}
+correspondence with .x indexes. See the Vignettes for further explanations
+and examples.}
 
 \item{auto_export}{(default = TRUE) Should variables in the function's
 calling environment be exported to workers? Default is set to TRUE for
@@ -142,7 +143,7 @@ use in pipe.
 }
 \description{
 The syntax and the logic of pa_walk functions are the identical to purrr's
-  walk function. Please refer to \code{\link[purrr]{walk}} if you are not
+  walk function. Please refer to \code{\link[purrr]{map}} if you are not
   familiar with purrr mapping style. Except .x and .f, other arguments are
   optional and control the parallelization processes. They will be handled
   to foreach function and the selected forreach adaptor.

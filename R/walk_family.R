@@ -1,7 +1,7 @@
 #' Parallel Version of purrr walk function
 #'
 #' The syntax and the logic of pa_walk functions are the identical to purrr's
-#'   walk function. Please refer to \code{\link[purrr]{walk}} if you are not
+#'   walk function. Please refer to \code{\link[purrr]{map}} if you are not
 #'   familiar with purrr mapping style. Except .x and .f, other arguments are
 #'   optional and control the parallelization processes. They will be handled
 #'   to foreach function and the selected forreach adaptor.
@@ -10,11 +10,11 @@
 #'   arguments, return section, and examples section are automatically imported
 #'   from purrr and foreach packages.
 #'
-#' @inheritParams purrr::walk
+#' @inheritParams purrr::map
 #' @inheritParams foreach::foreach
 #' @inheritParams pa_map
 #'
-#' @inherit purrr::walk return
+#' @inherit purrr::map return
 #'
 #' @export
 pa_walk <- function(.x, .f,
@@ -54,7 +54,7 @@ pa_walk <- function(.x, .f,
 #' Parallel Version of purrr walk2 function
 #'
 #' The syntax and the logic of pa_walk functions are the identical to purrr's
-#'   walk function. Please refer to \code{\link[purrr]{walk2}} if you are not
+#'   walk function. Please refer to \code{\link[purrr]{map2}} if you are not
 #'   familiar with purrr mapping style. Except .x, .y, .f, other arguments are
 #'   optional and control the parallelization processes. They will be handled
 #'   to foreach function and the selected forreach adaptor.
@@ -63,11 +63,11 @@ pa_walk <- function(.x, .f,
 #'   arguments, return section, and examples section are automatically imported
 #'   from purrr and foreach packages.
 #'
-#' @inheritParams purrr::walk2
+#' @inheritParams purrr::map2
 #' @inheritParams foreach::foreach
 #' @inheritParams pa_map
 #'
-#' @inherit purrr::walk2 return
+#' @inherit purrr::map2 return
 #'
 #' @export
 pa_walk2 <- function(.x, .y, .f,
@@ -90,7 +90,6 @@ pa_walk2 <- function(.x, .y, .f,
                          cluster_type = cluster_type,
                          auto_export = auto_export,
                          splitter = splitter,
-                         splitter = splitter,
                          .combine = c,
                          .init = NULL,
                          .final = NULL,
@@ -108,7 +107,7 @@ pa_walk2 <- function(.x, .y, .f,
 #' Parallel Version of purrr walk function
 #'
 #' The syntax and the logic of pa_walk functions are the identical to purrr's
-#'   walk function. Please refer to \code{\link[purrr]{iwalk}} if you are not
+#'   walk function. Please refer to \code{\link[purrr]{imap}} if you are not
 #'   familiar with purrr mapping style. Except .x and .f, other arguments are
 #'   optional and control the parallelization processes. They will be handled
 #'   to foreach function and the selected forreach adaptor.
@@ -117,11 +116,11 @@ pa_walk2 <- function(.x, .y, .f,
 #'   arguments, return section, and examples section are automatically imported
 #'   from purrr and foreach packages.
 #'
-#' @inheritParams purrr::walk
+#' @inheritParams purrr::imap
 #' @inheritParams foreach::foreach
 #' @inheritParams pa_map
 #'
-#' @inherit purrr::iwalk return
+#' @inherit purrr::imap return
 #'
 #' @export
 pa_iwalk <- function(.x, .f,
