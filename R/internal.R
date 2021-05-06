@@ -10,7 +10,7 @@
 #' @return Nothing! If the splitter is not valid, code execution will be
 #'   stopped.
 #' @noRd
-splitter_check <- function(x_length, splitter) {
+.splitter_check <- function(x_length, splitter) {
   ss <- unlist(splitter)
   if (!is.list(splitter) ||
       !rlang::is_integerish(ss)) {
@@ -121,7 +121,7 @@ splitter_check <- function(x_length, splitter) {
       parts <- list("1" = seq_len(x_length))
     }
   } else {
-    splitter_check(x_length = x_length, splitter = splitter)
+    .splitter_check(x_length = x_length, splitter = splitter)
     parts <- splitter
     ### handle cores
     if (rlang::is_integerish(cores) && length(splitter) != cores) {
