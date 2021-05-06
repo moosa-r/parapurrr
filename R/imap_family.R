@@ -7,7 +7,7 @@
 #' @return names or indexes of x
 #' @noRd
 .vec_index <- function(x) {
-  # copied from purrr's source, but modified to remove dependency
+  # copied from tidyverse source, but modified to remove dependency
   y <- names(x)
   if (is.null(y)) {
     return(seq_along(x))

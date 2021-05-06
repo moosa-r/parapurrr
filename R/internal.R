@@ -301,7 +301,7 @@ splitter_check <- function(x_length, splitter) {
   }
 
   if (!is.null(.y) && length(.x) != length(.y)) {
-    stop(sprintf("Mapped vectors should have equal lengths.\n(the length of'.x' is %s and '.y' is %s)",
+    stop(sprintf("Mapped vectors should have equal lengths.\n(the length of '.x' is %s and '.y' is %s)",
                  length(.x), length(.y)),
          call. = FALSE)
   }
