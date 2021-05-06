@@ -20,7 +20,9 @@ Imports:
     doParallel,
     foreach,
     parallel,
-    purrr
+    purrr,
+    rlang,
+    tidyselect
 Suggests:
     doFuture,
     doMPI,
