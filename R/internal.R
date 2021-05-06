@@ -247,6 +247,7 @@
 #'   function, parallel cluster registering function or foreach function.
 #' @param .x refer to \code{\link[purrr]{map}} and \code{\link[purrr]{imap}}
 #' @param .y refer to \code{\link[purrr]{map2}}
+#' @param .l refer to \code{\link[purrr]{map2}}
 #' @param .f refer to \code{\link[purrr]{map}}, \code{\link[purrr]{imap}} and
 #'   \code{\link[purrr]{map2}}
 #' @param int_fun After the input has been splitted into multiple chunks,
@@ -273,6 +274,7 @@
 #' @noRd
 .pa_internal <- function(.x,
                          .y,
+                         .l,
                          .f,
                          int_fun,
                          adaptor,
@@ -298,6 +300,13 @@
 
   if (!(length(.verbose) == 1L && !is.na(.verbose) && is.logical(.verbose))) {
     stop(".verbose should be 'TRUE' or 'FALSE'.", call. = FALSE)
+  }
+
+  if (!is.null(.l)) {
+    if (!(is.list(.l) && all(purrr::map_lgl(.l, is.vector)))) {
+      stop(".l should be A list of vectors.", call. = FALSE)
+    }
+    .l <- .l_recycler(.l)
   }
 
   if (!is.null(.y) && length(.x) != length(.y)) {
@@ -329,7 +338,9 @@
   }
 
   # cluster arguments
-  int_args <- .pa_args(x_length = length(.x),
+  int_args <- .pa_args(x_length = ifelse(test = is.null(.l),
+                                         yes = length(.x),
+                                         no = length(.l[[1]])),
                        cores = cores,
                        adaptor = adaptor,
                        cluster_type = cluster_type,
@@ -342,6 +353,20 @@
                             } else {
                               return(list(.x = .x[part_index],
                                           .y = .y[part_index]))
+                            }
+                          })
+  foreach_input <- lapply(X = int_args$parts,
+                          FUN = function(part_index) {
+                            if (!is.null(.l)) {
+                              return(lapply(X = .l,
+                                            FUN = function(.l_element) {
+                                              return(.l_element[part_index])
+                                            }))
+                            } else if (!is.null(.y)) {
+                              return(list(.x = .x[part_index],
+                                          .y = .y[part_index]))
+                            } else {
+                              return(.x[part_index])
                             }
                           })
   # register cluster
