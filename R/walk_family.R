@@ -49,7 +49,7 @@ pa_walk <- function(.x, .f,
                          .export = .export,
                          .noexport = .noexport,
                          .verbose = .verbose)
-  invisible(output)
+  invisible(.x)
 }
 
 #' Parallel Version of purrr walk2 function
@@ -103,7 +103,7 @@ pa_walk2 <- function(.x, .y, .f,
                          .export = .export,
                          .noexport = .noexport,
                          .verbose = .verbose)
-  invisible(output)
+  invisible(.x)
 }
 
 #' Parallel Version of purrr walk function
@@ -157,5 +157,5 @@ pa_iwalk <- function(.x, .f,
                          .export = .export,
                          .noexport = .noexport,
                          .verbose = .verbose)
-  invisible(output)
+  invisible(.x)
 }
