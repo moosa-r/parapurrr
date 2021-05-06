@@ -13,8 +13,8 @@
 splitter_check <- function(x_length, splitter) {
   ss <- unlist(splitter)
   if (!is.list(splitter) ||
-      !is.numeric(ss)) {
-    stop("Splitter should be a list where each of its elements is a numeric vector.",
+      !rlang::is_integerish(ss)) {
+    stop("Splitter should be a list where each of its elements is an integer or integer-like (without decimal points) vector.",
          call. = FALSE)
   }
   ss <- as.integer(ss)
@@ -110,7 +110,7 @@ splitter_check <- function(x_length, splitter) {
   ### divide the input
   if (is.null(splitter)) {
     ### handle cores
-    cores <- min(ifelse(is.numeric(cores),
+    cores <- min(ifelse(rlang::is_integerish(x = cores, n = 1),
                         yes = cores,
                         no = getOption("pa_cores")),
                  x_length)
@@ -124,7 +124,7 @@ splitter_check <- function(x_length, splitter) {
     splitter_check(x_length = x_length, splitter = splitter)
     parts <- splitter
     ### handle cores
-    if (is.numeric(cores) && length(splitter) != cores) {
+    if (rlang::is_integerish(cores) && length(splitter) != cores) {
       warning("Cores and splitter's lengths are inconsistent, using the splitter's length as cores: ", length(splitter),
               immediate. = TRUE, call. = FALSE)
     }
