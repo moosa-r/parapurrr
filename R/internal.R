@@ -11,13 +11,13 @@
 #'   stopped.
 #' @noRd
 splitter_check <- function(x_length, splitter) {
-  ss = unlist(splitter)
+  ss <- unlist(splitter)
   if (!is.list(splitter) ||
       !is.numeric(ss)) {
     stop("Splitter should be a list where each of its elements is a numeric vector.",
          call. = FALSE)
   }
-  ss = as.integer(ss)
+  ss <- as.integer(ss)
   if (length(ss) != x_length ||
       !setequal(ss, seq_len(x_length))
   ) {
