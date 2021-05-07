@@ -82,7 +82,7 @@
            "doSNOW" = {
              if (match(cluster_type,
                        c("MPI", "NWS", "SOCK"),
-                       nomatch = 0) == 0 ) {
+                       nomatch = 0) == 0) {
                stop("In doSNOW, cluster_type should be 'SOCK', 'MPI', or 'NWS'.",
                     call. = FALSE)
              }
@@ -91,7 +91,7 @@
              if (match(cluster_type,
                        c("multisession", "multicore",
                          "cluster_FORK", "cluster_PSOCK"),
-                       nomatch = 0) == 0 ) {
+                       nomatch = 0) == 0) {
                stop("In doFuture, cluster_type (i.e. strategy) should be 'multisession', 'multicore', 'cluster_FORK' or 'cluster_PSOCK'.",
                     call. = FALSE)
              }

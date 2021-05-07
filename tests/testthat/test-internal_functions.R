@@ -25,13 +25,13 @@ test_that(".l_recycler works", {
             z = 6:8)
   expect_error(object = .l_recycler(.l))
 
-  .l = list(x = 1:5,
+  .l <- list(x = 1:5,
             y = c("a", "b", "c", "d", "e"),
             z = 6:10)
   expect_identical(object = .l_recycler(.l),
                    expected = .l)
 
-  .l = list(x = 1:5,
+  .l <- list(x = 1:5,
             y = c("a", "b", "c", "d", "e"),
             z = NULL)
   expect_error(object = .l_recycler(.l))

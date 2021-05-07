@@ -8,7 +8,7 @@
 #'
 #' @return .l as provided with some elements recycled if necessary
 #' @noRd
-.l_recycler = function(.l) {
+.l_recycler <- function(.l) {
   lengs <- lengths(.l)
   if (length(unique(lengs)) == 1) {
     return(.l)
