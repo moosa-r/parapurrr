@@ -25,6 +25,7 @@ Imports:
     tidyselect
 Suggests:
     doFuture,
+    doMC,
     doMPI,
     doSNOW,
     dplyr,

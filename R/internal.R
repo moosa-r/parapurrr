@@ -35,7 +35,7 @@
 #' @param x_length The length of input atomic vector or list
 #' @param cores Number of workers (default: Core numbers - 1)
 #' @param adaptor foreach adaptor, current options: doMPI, doParallel (default),
-#'   doSNOW, doFuture
+#'   doSNOW, doFuture, doMC
 #' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
 #' @param splitter User-provided splitter. A list with numeric vectors.
@@ -58,7 +58,8 @@
                            "doSNOW" = "SOCK",
                            "doFuture" = switch(.Platform$OS.type,
                                                "windows" = "multisession",
-                                               "unix" = "multicore"))
+                                               "unix" = "multicore"),
+                           "doMC" = NULL)
   } else {
     switch(adaptor,
            "doMPI" = {
@@ -102,7 +103,14 @@
                     call. = FALSE)
              }
            },
-           stop("Adaptor should be 'doMPI', 'doParallel', 'doSNOW' or 'doFuture'.",
+           "doMC" = {
+             if (!is.null(cluster_type)) {
+               warning("Provided cluster_type is ignored when using doMC.",
+                       call. = FALSE)
+               cluster_type <- NULL
+             }
+           },
+           stop("Adaptor should be 'doMC', 'doMPI', 'doParallel', 'doSNOW' or 'doFuture'.",
                 call. = FALSE)
     )
   }
@@ -142,7 +150,7 @@
 #' Register Clusters necessary for foreach function. currently only doParallel
 #'   adaptor is supported, other adaptors will be implemented in the future.
 #' @param adaptor foreach adaptor. Currently, parapurr supports: \enumerate{
-#' \item "doMPI" \item "doParallel" \item "doSNOW" \item "doFuture"}
+#' \item "doMPI" \item "doParallel" \item "doSNOW" \item "doFuture" \item "doMC"}
 #' @param cores number of cores (i.e. workers)
 #' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
@@ -199,7 +207,14 @@
                           workers = cores)
            }
          },
-         stop("Adaptor should be 'doParallel', 'doSNOW' or 'doFuture'.",
+         "doMC" = {
+           if (!requireNamespace("doMC", quietly = TRUE)) {
+             stop("Package 'doMC' is required to be installed.")
+           }
+           cl <- NA
+           doMC::registerDoMC(cores = cores)
+         },
+         stop("Adaptor should be 'doMC', doMPI', 'doParallel', 'doSNOW' or 'doFuture'.",
               call. = FALSE)
   )
   return(list("cluster" = cl,
@@ -232,6 +247,9 @@
              parallel::stopCluster(active_cl$cluster)
            }
            future::plan("sequential")
+         },
+         "doMC" = {
+           invisible()
          }
   )
 
