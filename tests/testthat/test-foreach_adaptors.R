@@ -40,3 +40,10 @@ test_that("doFuture works on Unix", {
   expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doFuture", cluster_type = "cluster_FORK"),
                    expected = purrr::map(x, sqrt))
 })
+
+test_that("doMC works", {
+  skip_if_not_installed("doMC")
+  skip_on_os("windows")
+  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doMC"),
+                   expected = purrr::map(x, sqrt))
+})
