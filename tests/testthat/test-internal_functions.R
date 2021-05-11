@@ -9,8 +9,10 @@ test_that("splitter_works", {
   expect_identical(suppressWarnings(.pa_args(x_length = 5, splitter = list(1:4, 5), cores = 3))[["parts"]],
                    list(1:4, 5))
 
-})
+  expect_error(.splitter_check_at_if(x_length = 10, x_length_sel = 3,
+                                     splitter = list(1:10)))
 
+})
 
 test_that(".l_recycler works", {
   .l <- list(x = 1,
