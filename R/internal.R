@@ -16,8 +16,94 @@ manual_register <- function(force) {
   if (!is.null(force) && !is.na(force) & is.logical(force)) {
     options(parapurrr_manual_register = force)
   } else {
-    stop("force should be either TRUE or FALSE.")
+    stop("force should be either TRUE or FALSE.", call. = FALSE)
   }
+  invisible()
+}
+
+#' Argument check for user's input
+#'
+#' @param .errorhandling
+#' @param .export
+#' @param .inorder
+#' @param .l
+#' @param .noexport
+#' @param .packages
+#' @param .verbose
+#' @param .x
+#' @param .y
+#' @param adaptor
+#' @param auto_export
+#' @param cluster_type
+#' @param cores
+#'
+#' @return nothin, stop the code in case of error
+#' @noRd
+.pa_arg_check = function(.errorhandling,
+                         .export,
+                         .inorder,
+                         .l,
+                         .noexport,
+                         .packages,
+                         .verbose,
+                         .x,
+                         .y,
+                         adaptor,
+                         auto_export,
+                         cluster_type,
+                         cores) {
+
+  if (!(length(.inorder) == 1L && !is.na(.inorder) && is.logical(.inorder))) {
+    stop(".inorder should be 'TRUE' or 'FALSE'.", call. = FALSE)
+  }
+
+  if (!(length(.verbose) == 1L && !is.na(.verbose) && is.logical(.verbose))) {
+    stop(".verbose should be 'TRUE' or 'FALSE'.", call. = FALSE)
+  }
+
+  if (!is.null(.l)) {
+    if (!(is.list(.l) && all(purrr::map_lgl(.l, is.vector)))) {
+      stop(".l should be A list of vectors.", call. = FALSE)
+    }
+    .l <- .l_recycler(.l)
+  }
+
+  if (!is.null(.y) && length(.x) != length(.y)) {
+    stop(sprintf("Mapped vectors should have equal lengths.\n(the length of '.x' is %s and '.y' is %s)",
+                 length(.x), length(.y)),
+         call. = FALSE)
+  }
+
+  if (!(length(.errorhandling) == 1L &&
+        match(.errorhandling, c("stop", "remove", "pass"), nomatch = 0) > 0)) {
+    stop(".errorhandling should be 'stop', 'remove' or 'pass'.",
+         call. = FALSE)
+  }
+
+  if (!is.null(.packages) && !is.character(.packages)) {
+    stop(".packages should be a character vector.", call. = FALSE)
+  }
+
+  if (!is.null(.export) && !is.character(.export)) {
+    stop(".export should be a character vector.", call. = FALSE)
+  }
+
+  if (!is.null(.noexport) && !is.character(.noexport)) {
+    stop(".noexport should be a character vector.", call. = FALSE)
+  }
+
+  if (!(length(auto_export) == 1L &&
+        !is.na(auto_export) &&
+        is.logical(auto_export))) {
+    stop("auto_export should be 'TRUE' or 'FALSE'.", call. = FALSE)
+  }
+
+  if (!is.null(cores) &&
+      !(rlang::is_integerish(cores) && cores >= 1)) {
+    stop("Cores should be an integer or integer-like (with no decimal) number, equal to or greater than 1.",
+         call. = FALSE)
+  }
+
   invisible()
 }
 
@@ -157,7 +243,9 @@ manual_register <- function(force) {
                                                "windows" = "multisession",
                                                "unix" = "multicore"),
                            "doMC" = NULL)
+
   } else {
+
     switch(adaptor,
            "doMPI" = {
              if (!is.null(cluster_type)) {
@@ -207,9 +295,10 @@ manual_register <- function(force) {
                cluster_type <- NULL
              }
            },
-           stop("Adaptor should be 'doMC', 'doMPI', 'doParallel', 'doSNOW' or 'doFuture'.",
+           stop("Invalid adaptor.",
                 call. = FALSE)
     )
+
   }
 
   ### divide the input
@@ -259,7 +348,8 @@ manual_register <- function(force) {
   switch(adaptor,
          "doMPI" = {
            if (!requireNamespace("doMPI", quietly = TRUE)) {
-             stop("Package 'doMPI' is required to be installed.")
+             stop("Package 'doMPI' is required to be installed.",
+                  call. = FALSE)
            }
            cl <- doMPI::startMPIcluster(count = cores,
                                         verbose = FALSE)
@@ -267,7 +357,8 @@ manual_register <- function(force) {
          },
          "doParallel" = {
            if (!requireNamespace("doParallel", quietly = TRUE)) {
-             stop("Package 'doParallel' is required to be installed.")
+             stop("Package 'doParallel' is required to be installed.",
+                  call. = FALSE)
            }
            cl <- parallel::makeCluster(spec = cores,
                                        type = cluster_type)
@@ -277,7 +368,8 @@ manual_register <- function(force) {
            if (!requireNamespace("doSNOW", quietly = TRUE)) {
              stop("Package 'doSNOW' is required to be installed. Also: \n",
                   "If you intend to use MPI clusters: package \"Rmpi\" should be installed.\n",
-                  "If you intend to use NWS clusters: package \"nws\" should be installed.")
+                  "If you intend to use NWS clusters: package \"nws\" should be installed.",
+                  call. = FALSE)
            }
            cl <- snow::makeCluster(spec = cores,
                                    type = cluster_type)
@@ -285,7 +377,8 @@ manual_register <- function(force) {
          },
          "doFuture" = {
            if (!requireNamespace("doFuture", quietly = TRUE)) {
-             stop("Package 'doFuture' is required to be installed.")
+             stop("Package 'doFuture' is required to be installed.",
+                  call. = FALSE)
            }
            doFuture::registerDoFuture()
            if (cluster_type == "cluster_FORK") {
@@ -306,12 +399,13 @@ manual_register <- function(force) {
          },
          "doMC" = {
            if (!requireNamespace("doMC", quietly = TRUE)) {
-             stop("Package 'doMC' is required to be installed.")
+             stop("Package 'doMC' is required to be installed.",
+                  call. = FALSE)
            }
            cl <- NA
            doMC::registerDoMC(cores = cores)
          },
-         stop("Adaptor should be 'doMC', doMPI', 'doParallel', 'doSNOW' or 'doFuture'.",
+         stop("Adaptor should be 'doFuture', 'doMC', doMPI', 'doParallel' or 'doSNOW'.",
               call. = FALSE)
   )
   return(list("cluster" = cl,
@@ -408,49 +502,21 @@ manual_register <- function(force) {
                          .export,
                          .noexport,
                          .verbose) {
+
   # Check arguments
-  if (!(length(.inorder) == 1L && !is.na(.inorder) && is.logical(.inorder))) {
-    stop(".inorder should be 'TRUE' or 'FALSE'.", call. = FALSE)
-  }
-
-  if (!(length(.verbose) == 1L && !is.na(.verbose) && is.logical(.verbose))) {
-    stop(".verbose should be 'TRUE' or 'FALSE'.", call. = FALSE)
-  }
-
-  if (!is.null(.l)) {
-    if (!(is.list(.l) && all(purrr::map_lgl(.l, is.vector)))) {
-      stop(".l should be A list of vectors.", call. = FALSE)
-    }
-    .l <- .l_recycler(.l)
-  }
-
-  if (!is.null(.y) && length(.x) != length(.y)) {
-    stop(sprintf("Mapped vectors should have equal lengths.\n(the length of '.x' is %s and '.y' is %s)",
-                 length(.x), length(.y)),
-         call. = FALSE)
-  }
-
-  if (!(length(.errorhandling) == 1L &&
-        match(.errorhandling, c("stop", "remove", "pass"), nomatch = 0) > 0)) {
-    stop(".errorhandling should be 'stop', 'remove' or 'pass'.",
-         call. = FALSE)
-  }
-
-  if (!is.null(.packages) && !is.character(.packages)) {
-    stop(".packages should be a character vector.")
-  }
-
-  if (!is.null(.export) && !is.character(.export)) {
-    stop(".export should be a character vector.")
-  }
-  if (!is.null(.noexport) && !is.character(.noexport)) {
-    stop(".noexport should be a character vector.")
-  }
-  if (!(length(auto_export) == 1L &&
-        !is.na(auto_export) &&
-        is.logical(auto_export))) {
-    stop("auto_export should be 'TRUE' or 'FALSE'.", call. = FALSE)
-  }
+  .pa_arg_check(.errorhandling = .errorhandling,
+                .export = .export,
+                .inorder = .inorder,
+                .l = .l,
+                .noexport = .noexport,
+                .packages = .packages,
+                .verbose = .verbose,
+                .x = .x,
+                .y = .y,
+                adaptor = adaptor,
+                auto_export = auto_export,
+                cluster_type = cluster_type,
+                cores = cores)
 
   # Handle manual backend registering
   manual_backend <- getOption("parapurrr_manual_register") || is.null(adaptor)
