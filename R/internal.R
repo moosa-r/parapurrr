@@ -143,7 +143,8 @@ manual_register <- function(force) {
   }
 
   ### Handle number of cores
-  if (foreach::getDoParRegistered()) {
+  if (foreach::getDoParRegistered() &&
+      foreach::getDoParName() != "doSEQ") {
     cluster_type <- foreach::getDoParName()
     if (!rlang::is_integerish(cores)) {
       cores <- foreach::getDoParWorkers()
@@ -451,6 +452,11 @@ manual_register <- function(force) {
            invisible()
          }
   )
+  #un-register doPar, based on:
+  # https://stackoverflow.com/questions/25097729/un-register-a-doparallel-cluster/25110203#25110203
+  foreach::registerDoSEQ()
+  env <- foreach:::.foreachGlobals
+  rm(list = ls(name = env),pos = env)
 
   invisible()
 }
