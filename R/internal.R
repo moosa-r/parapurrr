@@ -452,24 +452,32 @@ manual_register <- function(force) {
     stop("auto_export should be 'TRUE' or 'FALSE'.", call. = FALSE)
   }
 
-  # cluster arguments
-  int_args <- .pa_args(x_length = ifelse(test = is.null(.l),
-                                         yes = length(.x),
-                                         no = length(.l[[1]])),
-                       cores = cores,
-                       adaptor = adaptor,
-                       cluster_type = cluster_type,
-                       splitter = splitter)
+  # Handle manual backend registering
+  manual_backend <- getOption("parapurrr_manual_register") || is.null(adaptor)
+
+  if (manual_backend) {
+    int_args <- .pa_args_manual(x_length = ifelse(test = is.null(.l),
+                                                  yes = length(.x),
+                                                  no = length(.l[[1]])),
+                                cores = cores,
+                                adaptor = adaptor,
+                                splitter = splitter)
+  } else {
+    int_args <- .pa_args(x_length = ifelse(test = is.null(.l),
+                                           yes = length(.x),
+                                           no = length(.l[[1]])),
+                         cores = cores,
+                         adaptor = adaptor,
+                         cluster_type = cluster_type,
+                         splitter = splitter)
+    # register cluster
+    cl <- .pa_reg_clusters(adaptor = adaptor,
+                           cores = int_args$cores,
+                           cluster_type = int_args$cluster_type)
+    on.exit(.pa_stop_clusters(cl))
+  }
+
   # split the input
-  foreach_input <- lapply(X = int_args$parts,
-                          FUN = function(part_index) {
-                            if (is.null(.y)) {
-                              return(.x[part_index])
-                            } else {
-                              return(list(.x = .x[part_index],
-                                          .y = .y[part_index]))
-                            }
-                          })
   foreach_input <- lapply(X = int_args$parts,
                           FUN = function(part_index) {
                             if (!is.null(.l)) {
@@ -484,11 +492,7 @@ manual_register <- function(force) {
                               return(.x[part_index])
                             }
                           })
-  # register cluster
-  cl <- .pa_reg_clusters(adaptor = adaptor,
-                         cores = int_args$cores,
-                         cluster_type = int_args$cluster_type)
-  on.exit(.pa_stop_clusters(cl))
+
   # update export:
   if (auto_export) {
     .export <- unique(c(.export, ls(envir = parent.frame(2)), ".f"))
@@ -496,6 +500,10 @@ manual_register <- function(force) {
     .export <- c(.export, ".f")
   }
   # perform!
+  `%performer%` <- ifelse(int_args$cores > 1,
+                          foreach::`%dopar%`,
+                          foreach::`%do%`)
+
   output <- foreach::foreach(x = foreach_input,
                              .combine = .combine,
                              .init = .init,
@@ -509,24 +517,27 @@ manual_register <- function(force) {
                              .packages = .packages,
                              .export = .export,
                              .noexport = c(.noexport,
+                                           ".combine",
+                                           ".errorhandling",
+                                           ".export",
+                                           ".final",
+                                           ".init",
+                                           ".inorder",
+                                           ".maxcombine",
+                                           ".multicombine",
+                                           ".noexport",
+                                           ".packages",
+                                           ".verbose",
                                            ".x",
                                            ".y",
-                                           "int_args",
+                                           "adaptor",
                                            "cl",
-                                           "cores",
                                            "cluster_type",
-                                           ".combine",
-                                           ".init",
-                                           ".final",
-                                           ".inorder",
-                                           ".multicombine",
-                                           ".maxcombine",
-                                           ".errorhandling",
-                                           ".packages",
-                                           ".export",
-                                           ".noexport",
-                                           ".verbose"),
-                             .verbose = .verbose) %dopar% {
+                                           "cores",
+                                           "int_args",
+                                           "manual_register",
+                                           "performer"),
+                             .verbose = .verbose) %performer% {
                                output <- eval(int_fun)
                                return(output)
                              }

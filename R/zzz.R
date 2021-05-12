@@ -16,5 +16,6 @@
 
 
 .onLoad <- function(libname, pkgname) {
-  options(pa_cores = parallel::detectCores() - 1)
+  options(pa_cores = parallel::detectCores() - 1,
+          parapurrr_manual_register = FALSE)
 }
