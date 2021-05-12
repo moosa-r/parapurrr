@@ -21,6 +21,80 @@ manual_register <- function(force) {
   invisible()
 }
 
+#' Handle Main Parallel Arguments with manual backend registering
+#'
+#' Handle cores (worker) numbers, cluster type and splitting indexes of input
+#'   vector.
+#'
+#' @param x_length The length of input atomic vector or list
+#' @param cores Number of workers (default: Core numbers - 1)
+#' @param adaptor foreach adaptor, current options: doMPI, doParallel (default),
+#'   doSNOW, doFuture, doMC
+#' @param splitter User-provided splitter. A list with numeric vectors.
+#'
+#' @return A list with core numbers, cluster type and splitting indexes to be
+#'   handled to downstream internal functions.
+#' @noRd
+.pa_args_manual <- function(x_length,
+                            cores = NULL,
+                            adaptor = NULL,
+                            splitter = NULL) {
+  ## argument check
+  if (getOption("parapurrr_manual_register") && !is.null(adaptor)) {
+    warning("adaptor = ", adaptor,
+            " is ignored, because forcing manual backend handling was enabled.\n",
+            "To revert that and re-enable automatic backend registeration, run:",
+            "manual_register(FALSE)",
+            immediate. = TRUE, call. = FALSE)
+  }
+
+  ### Handle number of cores
+  if (foreach::getDoParRegistered()) {
+    cluster_type <- foreach::getDoParName()
+    if (!rlang::is_integerish(cores)) {
+      cores <- foreach::getDoParWorkers()
+    } else if (foreach::getDoParWorkers() != cores) {
+      warning("You have provided cores = ", cores,
+              " but registered a doPar backend ", foreach::getDoParName(),
+              " with ", foreach::getDoParWorkers(), " workers",
+              call. = FALSE)
+    }
+  } else {
+    cores <- 1
+    cluster_type <- "Sequential"
+    if (is.null(adaptor) || getOption("parapurrr_manual_register")) {
+      warning("By calling manual_register(TRUE) or providing adaptor = NULL, ",
+              "you have forced manual doPar backend handeling;\n",
+              "But you did `not` register any backends before calling this function:\n",
+              "*** Running your code in `Sequential` mode. ***",
+              immediate. = TRUE, call. = FALSE)
+    }
+  }
+
+  ### split the input
+  if (!is.null(splitter) && length(splitter) != cores) {
+    warning("Cores and splitter's lengths are inconsistent. Ignoring your provided splitter.",
+            immediate. = TRUE, call. = FALSE)
+    splitter <- NULL
+  }
+
+  if (is.null(splitter)) {
+    if (cores > 1) {
+      parts <- split(x = seq_len(x_length),
+                     f = cut(seq_len(x_length), cores, labels = FALSE))
+    } else {
+      parts <- list("1" = seq_len(x_length))
+    }
+  } else {
+    .splitter_check(x_length = x_length, splitter = splitter)
+    parts <- splitter
+  }
+
+  return(list("cores" = cores,
+              "cluster_type" = cluster_type,
+              "parts" = parts))
+}
+
 #' Check User-Provided Splitter
 #'
 #' Check if the custom splitter provided by the user is valid; i.e. it is a
