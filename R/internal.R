@@ -1,3 +1,26 @@
+#' Disable automatic doPar backend registering
+#'
+#' By default, parapurrr automatically register doPar backends for you, based
+#'   on your provided "adaptor" argument in the function call. But you can
+#'   disable this behaviour and force manual control of the doPar backend.
+#'
+#' @param force (logical) Stop registering and handling the doPar backend by
+#'   parapurrr? Enter TRUE to stop automatic handling of dopar backends and
+#'   force the manual mode.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+manual_register <- function(force) {
+  if (!is.null(force) && !is.na(force) & is.logical(force)) {
+    options(parapurrr_manual_register = force)
+  } else {
+    stop("force should be either TRUE or FALSE.")
+  }
+  invisible()
+}
+
 #' Check User-Provided Splitter
 #'
 #' Check if the custom splitter provided by the user is valid; i.e. it is a
