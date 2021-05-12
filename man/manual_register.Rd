@@ -7,15 +7,26 @@
 manual_register(force)
 }
 \arguments{
-\item{force}{Stop registering and handling the doPar backend by
+\item{force}{(logical) Stop automatic handling the doPar backend by
 parapurrr? Enter TRUE to stop automatic handling of dopar backends and
 force the manual mode.}
 }
 \value{
-
+Nothing, Internally will change the corresponding option in R
+  environment
 }
 \description{
-By default, parapurrr automatically register doPar backends for you based
-  on your provided "adaptor" argument in the function call. But you can
-  disable this behaviour and force manual control of the doPar backend.
+By default, parapurrr automatically register doPar backends for you.
+  based the provided "adaptor" argument in the function call, parapurrr will
+  automatically handle (initiate, register and terminate) the selected
+  doPar backend and it's relevent infrastructures.
+  But you can disable this behaviour and force
+  manual control of the doPar backend. To do that your can: \enumerate{
+  \item Call manual_register(TRUE) once in your R session. After that,
+   any value for "adaptor" argument in parapurrrr function calls will be
+   ignored and you will have to manually handle the doPAr backend.
+  \item Call any parapurrr function with adaptor = NULL.}
+}
+\examples{
+\dontrun{ manual_register(TRUE) }
 }
