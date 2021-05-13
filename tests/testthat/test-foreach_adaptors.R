@@ -11,62 +11,96 @@ was_parallel <- function(...) {
 }
 
 test_that("doParallel works on windows and UNIX", {
-  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores,
+  expect_identical(object = parapurrr::pa_map(x, sqrt,
+                                              cores = n_cores,
                                               adaptor = "doParallel",
                                               cluster_type = "PSOCK"),
                    expected = y)
 
-  expect_true(was_parallel(adaptor = "doParallel", cluster_type = "PSOCK"))
+  expect_true(was_parallel(adaptor = "doParallel",
+                           cluster_type = "PSOCK",
+                           cores = n_cores))
 })
 
 test_that("doParallel works on Unix", {
   skip_on_os("windows")
-  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores,
+  expect_identical(object = parapurrr::pa_map(x, sqrt,
+                                              cores = n_cores,
                                               adaptor = "doParallel",
                                               cluster_type = "FORK"),
                    expected = y)
 
-  expect_true(was_parallel(adaptor = "doParallel", cluster_type = "FORK"))
+  expect_true(was_parallel(adaptor = "doParallel",
+                           cluster_type = "FORK",
+                           cores = n_cores))
 })
 
 test_that("doSNOW works", {
   skip_if_not_installed("doSNOW")
-  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doSNOW", cluster_type = "SOCK"),
+  expect_identical(object = parapurrr::pa_map(x, sqrt,
+                                              cores = n_cores,
+                                              adaptor = "doSNOW",
+                                              cluster_type = "SOCK"),
                    expected = y)
 
-  expect_true(was_parallel(adaptor = "doSNOW", cluster_type = "SOCK"))
+  expect_true(was_parallel(adaptor = "doSNOW",
+                           cluster_type = "SOCK",
+                           cores = n_cores))
 })
 
 test_that("doFuture works on windows", {
   skip_if_not_installed("doFuture")
-  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doFuture", cluster_type = "multisession"),
+  expect_identical(object = parapurrr::pa_map(x, sqrt,
+                                              cores = n_cores,
+                                              adaptor = "doFuture",
+                                              cluster_type = "multisession"),
                    expected = y)
-  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doFuture", cluster_type = "cluster_PSOCK"),
+  expect_identical(object = parapurrr::pa_map(x, sqrt,
+                                              cores = n_cores,
+                                              adaptor = "doFuture",
+                                              cluster_type = "cluster_PSOCK"),
                    expected = y)
 
-  expect_true(was_parallel(adaptor = "doFuture", cluster_type = "multisession"))
-  expect_true(was_parallel(adaptor = "doFuture", cluster_type = "cluster_PSOCK"))
+  expect_true(was_parallel(adaptor = "doFuture",
+                           cluster_type = "multisession",
+                           cores = n_cores))
+  expect_true(was_parallel(adaptor = "doFuture",
+                           cluster_type = "cluster_PSOCK",
+                           cores = n_cores))
 })
 
 test_that("doFuture works on Unix", {
   skip_if_not_installed("doFuture")
   skip_on_os("windows")
-  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doFuture", cluster_type = "multicore"),
+  expect_identical(object = parapurrr::pa_map(x, sqrt,
+                                              cores = n_cores,
+                                              adaptor = "doFuture",
+                                              cluster_type = "multicore"),
                    expected = y)
-  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doFuture", cluster_type = "cluster_FORK"),
+  expect_identical(object = parapurrr::pa_map(x, sqrt,
+                                              cores = n_cores,
+                                              adaptor = "doFuture",
+                                              cluster_type = "cluster_FORK"),
                    expected = y)
 
-  expect_true(was_parallel(adaptor = "doFuture", cluster_type = "multicore"))
-  expect_true(was_parallel(adaptor = "doFuture", cluster_type = "cluster_FORK"))
+  expect_true(was_parallel(adaptor = "doFuture",
+                           cluster_type = "multicore",
+                           cores = n_cores))
+  expect_true(was_parallel(adaptor = "doFuture",
+                           cluster_type = "cluster_FORK",
+                           cores = n_cores))
 })
 
 test_that("doMC works", {
   skip_if_not_installed("doMC")
   skip_on_os("windows")
-  expect_identical(object = parapurrr::pa_map(x, sqrt, cores = n_cores, adaptor = "doMC"),
+  expect_identical(object = parapurrr::pa_map(x, sqrt,
+                                              cores = n_cores,
+                                              adaptor = "doMC"),
                    expected = y)
 
-  expect_true(was_parallel(aadaptor = "doMC"))
+  expect_true(was_parallel(aadaptor = "doMC",
+                           cores = n_cores))
 })
 
 test_that("manual backend can be forced", {
@@ -77,18 +111,5 @@ test_that("manual backend can be forced", {
   manual_register(TRUE)
   expect_false(object = was_parallel())
   manual_register(FALSE)
-  expect_true(object = was_parallel())
-})
-
-test_that("doRNG works", {
-  skip_if_not_installed("doRNG")
-
-  use_doRNG(TRUE)
-  set.seed(100)
-  x <- pa_map(1:3, runif)
-
-  set.seed(100)
-  y <- pa_map(1:3, runif)
-  use_doRNG(FALSE)
-  expect_identical(x,y)
+  expect_true(object = was_parallel(cores = n_cores))
 })
