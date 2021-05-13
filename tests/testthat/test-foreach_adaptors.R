@@ -113,3 +113,12 @@ test_that("manual backend can be forced", {
   manual_register(FALSE)
   expect_true(object = was_parallel(cores = n_cores))
 })
+
+test_that("doRNG works", {
+  use_doRNG(TRUE)
+  skip_if_not_installed("doRNG")
+  expect_identical(object = {set.seed(100); pa_map(1:3, runif, cores = n_cores)},
+                   expected = {set.seed(100); pa_map(1:3, runif, cores = n_cores)})
+  use_doRNG(FALSE)
+})
+
