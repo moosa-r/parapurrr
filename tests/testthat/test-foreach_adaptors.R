@@ -99,7 +99,7 @@ test_that("doMC works", {
                                               adaptor = "doMC"),
                    expected = y)
 
-  expect_true(was_parallel(aadaptor = "doMC",
+  expect_true(was_parallel(adaptor = "doMC",
                            cores = n_cores))
 })
 
