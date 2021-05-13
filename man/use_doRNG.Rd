@@ -7,7 +7,7 @@
 use_doRNG(dorng)
 }
 \arguments{
-\item{force}{(logical) Use doRNG instead of normal foreach loops?}
+\item{dorng}{(logical) Use doRNG instead of normal foreach loops?}
 }
 \value{
 Nothing, Internally will change the corresponding option in R
