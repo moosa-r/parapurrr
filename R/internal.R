@@ -29,6 +29,37 @@ manual_register <- function(force) {
   invisible()
 }
 
+#' Use doRNG package for reproducibility
+#'
+#' doRNG package provides functions to perform reproducible parallel foreach
+#'   loops. By calling this function, you can force parapurrr to use doRNG
+#'   with combination of your any selected doPar adaptor to create fully
+#'   reproducible parallel function calls. see:
+#'   \href{https://cran.r-project.org/web/packages/doRNG/}{doRNG:
+#'   Generic Reproducible Parallel Backend for 'foreach' Loops}
+#'
+#' @param force (logical) Use doRNG instead of normal foreach loops?
+#'
+#' @return Nothing, Internally will change the corresponding option in R
+#'   environment
+#' @export
+#' @examples
+#' \dontrun{
+#' use_doRNG(TRUE)
+#' set.seed(100)
+#' x <- pa_map(1:3, runif)
+#' set.seed(100)
+#' y <- pa_map(1:3, runif)
+#' identical(x,y)}
+use_doRNG <- function(dorng) {
+  if (!is.null(dorng) && !is.na(dorng) & is.logical(dorng)) {
+    options(parapurrr_dorng = dorng)
+  } else {
+    stop("dorng should be either TRUE or FALSE.", call. = FALSE)
+  }
+  invisible()
+}
+
 #' Argument check for user's input
 #'
 #' @param .errorhandling
@@ -581,8 +612,10 @@ manual_register <- function(force) {
   }
   # perform!
   `%performer%` <- ifelse(int_args$cores > 1,
-                          foreach::`%dopar%`,
-                          foreach::`%do%`)
+                          yes = ifelse(getOption("parapurrr_dorng"),
+                                 yes = doRNG::`%dorng%`,
+                                 no = foreach::`%dopar%`),
+                          no = foreach::`%do%`)
 
   output <- foreach::foreach(x = foreach_input,
                              .combine = .combine,

@@ -27,6 +27,7 @@ Suggests:
     doFuture,
     doMC,
     doMPI,
+    doRNG,
     doSNOW,
     dplyr,
     future,
