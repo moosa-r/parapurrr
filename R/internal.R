@@ -38,7 +38,7 @@ manual_register <- function(force) {
 #'   \href{https://cran.r-project.org/web/packages/doRNG/}{doRNG:
 #'   Generic Reproducible Parallel Backend for 'foreach' Loops}
 #'
-#' @param force (logical) Use doRNG instead of normal foreach loops?
+#' @param dorng (logical) Use doRNG instead of normal foreach loops?
 #'
 #' @return Nothing, Internally will change the corresponding option in R
 #'   environment
@@ -62,21 +62,7 @@ use_doRNG <- function(dorng) {
 
 #' Argument check for user's input
 #'
-#' @param .errorhandling
-#' @param .export
-#' @param .inorder
-#' @param .l
-#' @param .noexport
-#' @param .packages
-#' @param .verbose
-#' @param .x
-#' @param .y
-#' @param adaptor
-#' @param auto_export
-#' @param cluster_type
-#' @param cores
-#'
-#' @return nothin, stop the code in case of error
+#' @return nothing, stop the code in case of error
 #' @noRd
 .pa_arg_check = function(.errorhandling,
                          .export,
