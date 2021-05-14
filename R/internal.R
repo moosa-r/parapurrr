@@ -129,6 +129,14 @@ use_doRNG <- function(dorng) {
          call. = FALSE)
   }
 
+  if (getOption("parapurrr_manual_register") && !is.null(adaptor)) {
+    warning("adaptor = ", adaptor,
+            " is ignored, because forcing manual backend handling was enabled.\n",
+            "To revert that and re-enable automatic backend registeration, run:",
+            "manual_register(FALSE)",
+            immediate. = TRUE, call. = FALSE)
+  }
+
   invisible()
 }
 
@@ -150,14 +158,6 @@ use_doRNG <- function(dorng) {
                             cores = NULL,
                             adaptor = NULL,
                             splitter = NULL) {
-  ## argument check
-  if (getOption("parapurrr_manual_register") && !is.null(adaptor)) {
-    warning("adaptor = ", adaptor,
-            " is ignored, because forcing manual backend handling was enabled.\n",
-            "To revert that and re-enable automatic backend registeration, run:",
-            "manual_register(FALSE)",
-            immediate. = TRUE, call. = FALSE)
-  }
 
   ### Handle number of cores
   if (foreach::getDoParRegistered() &&
