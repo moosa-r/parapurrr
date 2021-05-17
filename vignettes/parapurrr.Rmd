@@ -33,11 +33,18 @@ knitr::opts_chunk$set(echo = TRUE,
 
 parapurrr is a package to run purrr's mapping functions in parallel (i.e., incorporating multiple CPU cores instead of the default, one); It simply does it by connecting [purrr](https://cran.r-project.org/package=purrr "purrr: Functional Programming Tools") with [foreach](https://cran.r-project.org/package=foreach "foreach: Provides Foreach Looping Construct") package and its adaptors. Users are only required to add a prefix "pa\_" before their desired purrr functions (e.g. pa_map instead of map). That's it! You do not need to worry about anything else, the rest will be handled internally for you.
 
-```{r example}
+```{r load libraries}
 library(purrr)
-x <- map(1:2, sqrt)
 library(parapurrr)
-y <- pa_map(1:2, sqrt)
+```
+
+```{r force 2 cores, include=FALSE, echo=FALSE}
+options(pa_cores = 2)
+```
+
+```{r example}
+x <- map(1:10, sqrt)
+y <- pa_map(1:10, sqrt)
 
 # the two objects are identical, but x was computed sequentially and y was computed using parallel compution
 identical(x,y)
@@ -85,14 +92,14 @@ Under the hood, after splitting your job into multiple segments, parapurrr will 
 To be sure, you can check the [PID](https://en.wikipedia.org/wiki/Process_identifier "Process identifier") within your .f function. In sequential mode, because one R process will execute your codes, we expect that all the returned PIDs to be the same:
 
 ```{r pid_seq}
-pid_seq <- map(1:2, ~Sys.getpid())
+pid_seq <- map(1:4, ~Sys.getpid())
 print(pid_seq)
 ```
 
 As you can see, all of the .f calls were performed by a single process. Now, let us check parapurrr:
 
 ```{r pid_parallel}
-pid_par <- pa_map(1:2, ~Sys.getpid())
+pid_par <- pa_map(1:4, ~Sys.getpid())
 print(pid_par)
 ```
 
@@ -219,7 +226,7 @@ parapurrr will seek for any registered doPar backend and will hand over your job
 
 ```{r no_backend_warning, warning=TRUE}
 # No parallel backend was registered, so we would expect a warning:
-x <- pa_map(1:2, ~Sys.getpid(), adaptor = NULL)
+x <- pa_map(1:3, ~Sys.getpid(), adaptor = NULL)
 
 # we can confirm that by checking that only one PID was returned:
 print(x)
@@ -231,9 +238,9 @@ library(parallel)
 library(doParallel)
 cl <- makePSOCKcluster(2)
 registerDoParallel(cl)
-x1 <- pa_map(1:2, ~Sys.getpid(), adaptor = NULL)
+x1 <- pa_map(1:10, ~Sys.getpid(), adaptor = NULL)
 # you can run another parapurrr function and check the PIDs to see that the same cluster is being used:
-x2 <- pa_map(1:2, ~Sys.getpid(), adaptor = NULL)
+x2 <- pa_map(1:10, ~Sys.getpid(), adaptor = NULL)
 print(x1)
 print(x2)
 
@@ -248,7 +255,7 @@ This will force parapurrr functions to ignore any provided "adaptor" argument.Th
 ```{r manual_register, warning=TRUE}
 manual_register(TRUE)
 # We expect 2 warnings here:
-x <- pa_map(1:2, ~Sys.getpid(), adaptor = "doParallel")
+x <- pa_map(1:10, ~Sys.getpid(), adaptor = "doParallel")
 
 # we can revert to the default mode:
 manual_register(FALSE)
