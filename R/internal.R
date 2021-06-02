@@ -22,7 +22,7 @@
 #' \dontrun{ manual_register(TRUE) }
 manual_register <- function(force) {
   if (!is.null(force) && !is.na(force) & is.logical(force)) {
-    options(parapurrr_manual_register = force)
+    options(pa_manual_register = force)
   } else {
     stop("force should be either TRUE or FALSE.", call. = FALSE)
   }
@@ -53,7 +53,7 @@ manual_register <- function(force) {
 #' identical(x,y)}
 use_doRNG <- function(dorng) {
   if (!is.null(dorng) && !is.na(dorng) & is.logical(dorng)) {
-    options(parapurrr_dorng = dorng)
+    options(pa_dorng = dorng)
   } else {
     stop("dorng should be either TRUE or FALSE.", call. = FALSE)
   }
@@ -129,7 +129,7 @@ use_doRNG <- function(dorng) {
          call. = FALSE)
   }
 
-  if (getOption("parapurrr_manual_register") && !is.null(adaptor)) {
+  if (getOption("pa_manual_register") && !is.null(adaptor)) {
     warning("adaptor = ", adaptor,
             " is ignored, because forcing manual backend handling was enabled.\n",
             "To revert that and re-enable automatic backend registeration, run:",
@@ -174,7 +174,7 @@ use_doRNG <- function(dorng) {
   } else {
     cores <- 1
     cluster_type <- "Sequential"
-    if (is.null(adaptor) || getOption("parapurrr_manual_register")) {
+    if (is.null(adaptor) || getOption("pa_manual_register")) {
       warning("By calling manual_register(TRUE) or providing adaptor = NULL, ",
               "you have forced manual doPar backend handeling;\n",
               "But you did `not` register any backends before calling this function:\n",
@@ -550,7 +550,7 @@ use_doRNG <- function(dorng) {
                 cores = cores)
 
   # Handle manual backend registering
-  manual_backend <- getOption("parapurrr_manual_register") || is.null(adaptor)
+  manual_backend <- getOption("pa_manual_register") || is.null(adaptor)
 
   if (manual_backend) {
     int_args <- .pa_args_manual(x_length = ifelse(test = is.null(.l),
@@ -598,7 +598,7 @@ use_doRNG <- function(dorng) {
   }
   # perform!
   `%performer%` <- ifelse(int_args$cores > 1,
-                          yes = ifelse(getOption("parapurrr_dorng"),
+                          yes = ifelse(getOption("pa_dorng"),
                                  yes = doRNG::`%dorng%`,
                                  no = foreach::`%dopar%`),
                           no = foreach::`%do%`)
