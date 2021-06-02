@@ -31,7 +31,7 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Short -Yet Enough- Introduction
 
-parapurrr is a package to run purrr's mapping functions in parallel (i.e., incorporating multiple CPU cores instead of the default, one); It simply does it by connecting [purrr](https://cran.r-project.org/package=purrr "purrr: Functional Programming Tools") with [foreach](https://cran.r-project.org/package=foreach "foreach: Provides Foreach Looping Construct") package and its adaptors. Users are only required to add a prefix "pa\_" before their desired purrr functions (e.g. pa_map instead of map). That's it! You do not need to worry about anything else, the rest will be handled internally for you.
+Run [purrr](https://cran.r-project.org/package=purrr "purrr: Functional Programming Tools")'s mapping functions in parallel (i.e., incorporate multiple CPU cores instead of the default, one). The package parapurrr does that by connecting [purrr](https://cran.r-project.org/package=purrr "purrr: Functional Programming Tools") to [foreach](https://cran.r-project.org/package=foreach "foreach: Provides Foreach Looping Construct") package and its adaptors. Users are only required to add a prefix "pa\_" before their desired purrr functions (e.g. pa_map instead of map). All map family functions and all foreach adaptors on CRAN are supported. That's it! You do not need to worry about anything else, the rest will be handled internally for you.
 
 ```{r load libraries}
 library(purrr)

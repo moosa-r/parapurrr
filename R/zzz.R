@@ -1,13 +1,22 @@
-#' @title parapurrr: Do Purrr in Parallel
+#' @section Supported purrr functions:
+#' \enumerate{
+#' \item \strong{map family}: map, map_chr, map_dbl, map_df, map_dfc, map_dfr, map_int, map_lgl
+#' \item \strong{map2 family}: map2, map2_chr, map2_dbl, map2_df, map2_dfc, map2_dfr, map2_int, map2_lgl
+#' \item \strong{conditional map family}: map_at, map_if
+#' \item \strong{pmap family}: pmap, pmap_chr, pmap_dbl, pmap_df, pmap_dfc, pmap_dfr, pmap_int, pmap_lgl
+#' \item \strong{imap family}: imap, imap_chr, imap_dbl, imap_df, imap_dfc, imap_dfr, imap_int, imap_lgl
+#' \item \strong{walk family}: walk, walk2,iwalk, pwalk
+#' }
 #'
-#' @description This package Connects Purrr and Foreach packages. The only thing
-#'   you need to do is to add a "pa_" preffix before your purrr functions. That's
-#'   it! The purrr's mapping functions will be handled to Foreeach and you can
-#'   use every available CPU cores in your computer. Of course, there are other
-#'   extra arguments that will give you more control, but they are optional.
-#'
-#' @section Currently parapurrr implemented the parallel version of:
-#' \enumerate{\item map}
+#' @section Supported foreach adaptors:
+#' \enumerate{
+#' \item doFuture
+#' \item doMC
+#' \item doMPI
+#' \item doParallel (default adaptor)
+#' \item doRNG
+#' \item doSNOW
+#' }
 #'
 #' @docType package
 #' @name parapurrr
