@@ -162,6 +162,8 @@ Each foreach adaptor relies on specific architecture to perform your code in par
 
 : Supported parallel adaptors and their available cluster types.
 
+Note that to use MPI, you have to setup it on your machine before starting your R session. Read the guide from Rmpi developer for [Windows](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/windows.htm "Instructions to install and run Rmpi under Microsoft MPI"), [Linux](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/install.htm "Instructions to install Rmpi (under Linux only)"), or [MacOS](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/mac_os_x.htm "Rmpi for Mac OS X").
+
 ## splitter
 
 To do your job in parallel, parapurrr will split your input into multiple segments. This splitting process is as symmetrically distributed as possible and will not consider any factors other than your input's length and available workers (cores). But you override this by explicitly telling parapurrr how to split your input. To do this, provide a list where each of its elements is a vector of integers or integer-like numbers (i.e. no decimal points) of the indexes of your input elements.
