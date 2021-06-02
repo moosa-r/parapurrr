@@ -26,8 +26,6 @@ Imports:
     tidyselect
 Suggests:
     doFuture,
-    doMC,
-    doMPI,
     doRNG,
     doSNOW,
     dplyr,
@@ -35,9 +33,12 @@ Suggests:
     knitr,
     nws,
     rmarkdown,
-    Rmpi,
     snow,
     testthat (>= 3.0.0)
+Enhances:
+    doMC,
+    doMPI,
+    Rmpi
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
