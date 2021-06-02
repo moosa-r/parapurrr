@@ -35,7 +35,7 @@ manual_register <- function(force) {
 #'   loops. By calling this function, you can force parapurrr to use doRNG
 #'   with combination of your any selected doPar adaptor to create fully
 #'   reproducible parallel function calls. see:
-#'   \href{https://cran.r-project.org/web/packages/doRNG/}{doRNG:
+#'   \href{https://cran.r-project.org/package=doRNG}{doRNG:
 #'   Generic Reproducible Parallel Backend for 'foreach' Loops}
 #'
 #' @param dorng (logical) Use doRNG instead of normal foreach loops?

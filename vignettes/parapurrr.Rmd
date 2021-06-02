@@ -265,7 +265,7 @@ manual_register(FALSE)
 
 # Use doRNG for reproducibility
 
-There is always the issue of reproducibility when it comes to random number generators. Of course, if this issue concerns you, you will not need any further elaboration on this matter here. doRNG makes it possible for foreach users to set seeds and do reproducible loops. You can use it in parapurrr by running `use_doRNG(TRUE)`. This will internally replace `%dopar%` with `%doRNG%`. You revert to normal, run `use_doRNG(FALSE)`.
+There is always the issue of reproducibility when it comes to random number generators. Of course, if this issue concerns you, you will not need any further elaboration on this matter here. [doRNG](https://cran.r-project.org/package=doRNG "doRNG: Generic Reproducible Parallel Backend for 'foreach' Loops") makes it possible for foreach users to set seeds and do reproducible loops. You can use it in parapurrr by running `use_doRNG(TRUE)`. This will internally replace `%dopar%` with `%doRNG%`. You revert to normal, run `use_doRNG(FALSE)`.
 
 ```{r doRNG}
 set.seed(100)
