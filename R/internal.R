@@ -613,10 +613,17 @@ use_doRNG <- function(dorng) {
 
   # update export:
   if (auto_export) {
-    .export <- unique(c(.export, ls(envir = parent.frame(2)), ".f"))
-  } else {
-    .export <- c(.export, ".f")
+    .export <- unique(c(.export, ls(envir = parent.frame(2))))
   }
+
+  for (obj_i in seq_along(.export)) {
+    assign(x = .export[[obj_i]],
+           value = rlang::env_get(env = parent.frame(2),
+                                  nm = .export[[obj_i]],
+                                  default = stop(),
+                                  inherit = TRUE))
+  }
+
   # perform!
   `%performer%` <- ifelse(int_args$cores > 1,
                           yes = ifelse(getOption("pa_dorng"),
@@ -637,9 +644,8 @@ use_doRNG <- function(dorng) {
                                                int_args$cores),
                              .errorhandling = .errorhandling,
                              .packages = .packages,
-                             .export = .export,
+                             .export = c(.export, ".f", "int_fun"),
                              .noexport = c(.noexport,
-                                           "int_fun",
                                            ".combine",
                                            ".errorhandling",
                                            ".export",
@@ -658,7 +664,9 @@ use_doRNG <- function(dorng) {
                                            "cluster_type",
                                            "cores",
                                            "int_args",
+                                           "int_fun",
                                            "manual_register",
+                                           "obj_i",
                                            "performer"),
                              .verbose = .verbose) %performer% {
                                output <- eval(int_fun)
