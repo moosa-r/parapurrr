@@ -56,7 +56,7 @@
 #'
 #' @inherit purrr::map return
 #' @export
-pa_map <- function(.x, .f,
+pa_map <- function(.x, .f, ...,
                    cores = NULL,
                    adaptor = "doParallel", cluster_type = NULL,
                    splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -65,12 +65,13 @@ pa_map <- function(.x, .f,
                    .inorder = TRUE,
                    .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map(x, .f))
+  int_fun <- .pa_call(purrr::map, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -93,7 +94,7 @@ pa_map <- function(.x, .f,
 
 #' @rdname pa_map
 #' @export
-pa_map_lgl <- function(.x, .f,
+pa_map_lgl <- function(.x, .f, ...,
                        cores = NULL,
                        adaptor = "doParallel", cluster_type = NULL,
                        splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -102,12 +103,13 @@ pa_map_lgl <- function(.x, .f,
                        .inorder = TRUE,
                        .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map_lgl(x, .f))
+  int_fun <- .pa_call(purrr::map_lgl, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -130,7 +132,7 @@ pa_map_lgl <- function(.x, .f,
 
 #' @rdname pa_map
 #' @export
-pa_map_int <- function(.x, .f,
+pa_map_int <- function(.x, .f, ...,
                        cores = NULL,
                        adaptor = "doParallel", cluster_type = NULL,
                        splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -139,12 +141,13 @@ pa_map_int <- function(.x, .f,
                        .inorder = TRUE,
                        .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map_int(x, .f))
+  int_fun <- .pa_call(purrr::map_int, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -167,7 +170,7 @@ pa_map_int <- function(.x, .f,
 
 #' @rdname pa_map
 #' @export
-pa_map_dbl <- function(.x, .f,
+pa_map_dbl <- function(.x, .f, ...,
                        cores = NULL,
                        adaptor = "doParallel", cluster_type = NULL,
                        splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -176,12 +179,13 @@ pa_map_dbl <- function(.x, .f,
                        .inorder = TRUE,
                        .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map_dbl(x, .f))
+  int_fun <- .pa_call(purrr::map_dbl, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -204,7 +208,7 @@ pa_map_dbl <- function(.x, .f,
 
 #' @rdname pa_map
 #' @export
-pa_map_chr <- function(.x, .f,
+pa_map_chr <- function(.x, .f, ...,
                        cores = NULL,
                        adaptor = "doParallel", cluster_type = NULL,
                        splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -213,12 +217,13 @@ pa_map_chr <- function(.x, .f,
                        .inorder = TRUE,
                        .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map_chr(x, .f))
+  int_fun <- .pa_call(purrr::map_chr, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -241,7 +246,7 @@ pa_map_chr <- function(.x, .f,
 
 #' @rdname pa_map
 #' @export
-pa_map_df <- function(.x, .f,
+pa_map_df <- function(.x, .f, ...,
                       cores = NULL,
                       adaptor = "doParallel", cluster_type = NULL,
                       splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -253,12 +258,13 @@ pa_map_df <- function(.x, .f,
     stop("`map_df()` requires dplyr.")
   }
 
-  int_fun <- quote(purrr::map(x, .f))
+  int_fun <- .pa_call(purrr::map, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -281,7 +287,7 @@ pa_map_df <- function(.x, .f,
 
 #' @rdname pa_map
 #' @export
-pa_map_dfr <- function(.x, .f,
+pa_map_dfr <- function(.x, .f, ...,
                        cores = NULL,
                        adaptor = "doParallel", cluster_type = NULL,
                        splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -293,12 +299,13 @@ pa_map_dfr <- function(.x, .f,
     stop("`map_dfr()` requires dplyr.")
   }
 
-  int_fun <- quote(purrr::map(x, .f))
+  int_fun <- .pa_call(purrr::map, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -321,7 +328,7 @@ pa_map_dfr <- function(.x, .f,
 
 #' @rdname pa_map
 #' @export
-pa_map_dfc <- function(.x, .f,
+pa_map_dfc <- function(.x, .f, ...,
                        cores = NULL,
                        adaptor = "doParallel", cluster_type = NULL,
                        splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -333,12 +340,13 @@ pa_map_dfc <- function(.x, .f,
     stop("`map_dfc()` requires dplyr.")
   }
 
-  int_fun <- quote(purrr::map(x, .f))
+  int_fun <- .pa_call(purrr::map, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -361,7 +369,7 @@ pa_map_dfc <- function(.x, .f,
 
 # #' @rdname pa_map
 # #' @export
-# pa_map_raw <- function(.x, .f,
+# pa_map_raw <- function(.x, .f, ...,
 #                        cores = NULL,
 #                        adaptor = "doParallel", cluster_type = NULL,
 #                        splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -370,12 +378,13 @@ pa_map_dfc <- function(.x, .f,
 #                        .inorder = TRUE,
 #                        .verbose = FALSE) {
 #
-#   int_fun <- quote(purrr::map_raw(x, .f))
+#   int_fun <- .pa_call(purrr::map_raw, x_split, .f, ...)
 #
 #   output <- .pa_internal(.x = .x,
 #                          .y = NULL,
 #                          .l = NULL,
 #                          .f = .f,
+#                          ... = ...,
 #                          int_fun = int_fun,
 #                          adaptor = adaptor,
 #                          cores = cores,

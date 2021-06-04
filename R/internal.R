@@ -1,3 +1,23 @@
+#' Create a call to be applied to input segments
+#'
+#' Creates a call object to be later evaluated in parallel and be applied
+#'   to each splitte inputs.
+#'
+#' It handles ellipsis in the exported function's environment not in the
+#'   spawned/forked instances, thus it is safer and less bug-prone.
+#'
+#' @param fun (class = function) a function to be passed to "what" argument in
+#'   do.call
+#' @param ... arguments to be passed to "arg" argument in do.call
+#'
+#' @return A call object
+#' @noRd
+.pa_call <- function(fun, ...) {
+  call("do.call",
+       what = substitute(fun),
+       args = substitute(list(...)))
+}
+
 #' Disable automatic doPar backend registering
 #'
 #' By default, parapurrr automatically register doPar backends for you.
@@ -516,6 +536,7 @@ use_doRNG <- function(dorng) {
                          .y,
                          .l,
                          .f,
+                         ...,
                          int_fun,
                          adaptor,
                          cores,
@@ -599,11 +620,13 @@ use_doRNG <- function(dorng) {
   # perform!
   `%performer%` <- ifelse(int_args$cores > 1,
                           yes = ifelse(getOption("pa_dorng"),
-                                 yes = doRNG::`%dorng%`,
-                                 no = foreach::`%dopar%`),
+                                       yes = doRNG::`%dorng%`,
+                                       no = foreach::`%dopar%`),
                           no = foreach::`%do%`)
 
-  output <- foreach::foreach(x = foreach_input,
+  .f <- purrr::as_mapper(.f, ...)
+
+  output <- foreach::foreach(x_split = foreach_input,
                              .combine = .combine,
                              .init = .init,
                              .final = .final,
@@ -616,6 +639,7 @@ use_doRNG <- function(dorng) {
                              .packages = .packages,
                              .export = .export,
                              .noexport = c(.noexport,
+                                           "int_fun",
                                            ".combine",
                                            ".errorhandling",
                                            ".export",

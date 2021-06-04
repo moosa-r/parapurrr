@@ -7,6 +7,7 @@
 pa_iwalk(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -42,6 +43,8 @@ converted to an extractor function. Character vectors index by
 name and numeric vectors index by position; use a list to index
 by position and name at different levels. If a component is not
 present, the value of \code{.default} will be returned.}
+
+\item{...}{Additional arguments passed on to the mapped function.}
 
 \item{cores}{(optional) Number of cores (i.e. workers) to be used. Default
 is: your computer CPU cores - 1}

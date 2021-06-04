@@ -8,6 +8,7 @@
 pa_map_if(
   .x,
   .p,
+  ...,
   .f,
   .else = NULL,
   cores = NULL,
@@ -27,6 +28,7 @@ pa_map_at(
   .x,
   .at,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -49,6 +51,8 @@ Alternatively, if the elements of \code{.x} are themselves lists of
 objects, a string indicating the name of a logical element in the
 inner lists. Only those elements where \code{.p} evaluates to
 \code{TRUE} will be modified.}
+
+\item{...}{Additional arguments passed on to the mapped function.}
 
 \item{.f}{A function, formula, or vector (not necessarily atomic).
 

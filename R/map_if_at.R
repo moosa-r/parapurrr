@@ -49,7 +49,7 @@
 #' @inherit purrr::map_if return
 #'
 #' @export
-pa_map_if <- function(.x, .p, .f, .else = NULL,
+pa_map_if <- function(.x, .p, ..., .f, .else = NULL,
                       cores = NULL,
                       adaptor = "doParallel", cluster_type = NULL,
                       splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -58,7 +58,7 @@ pa_map_if <- function(.x, .p, .f, .else = NULL,
                       .inorder = TRUE,
                       .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map(x, .f))
+  int_fun <- .pa_call(purrr::map, x_split, .f, ...)
 
   sel <- probe(.x, .p)
   output <- purrr::list_along(.x)
@@ -71,6 +71,7 @@ pa_map_if <- function(.x, .p, .f, .else = NULL,
                               .y = NULL,
                               .l = NULL,
                               .f = .f,
+                              ... = ...,
                               int_fun = int_fun,
                               adaptor = adaptor,
                               cores = cores,
@@ -123,7 +124,7 @@ pa_map_if <- function(.x, .p, .f, .else = NULL,
 
 #' @rdname pa_map_if
 #' @export
-pa_map_at <- function(.x, .at, .f,
+pa_map_at <- function(.x, .at, .f, ...,
                       cores = NULL,
                       adaptor = "doParallel", cluster_type = NULL,
                       splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -132,7 +133,7 @@ pa_map_at <- function(.x, .at, .f,
                       .inorder = TRUE,
                       .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map(x, .f))
+  int_fun <- .pa_call(purrr::map, x_split, .f, ...)
 
   where <- at_selection(names(.x), .at)
   sel <- inv_which(.x, where)
@@ -146,6 +147,7 @@ pa_map_at <- function(.x, .at, .f,
                               .y = NULL,
                               .l = NULL,
                               .f = .f,
+                              ... = ...,
                               int_fun = int_fun,
                               adaptor = adaptor,
                               cores = cores,

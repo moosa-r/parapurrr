@@ -24,6 +24,7 @@ pa_map2(
   .x,
   .y,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -41,6 +42,7 @@ pa_map2_lgl(
   .x,
   .y,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -58,6 +60,7 @@ pa_map2_int(
   .x,
   .y,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -75,6 +78,7 @@ pa_map2_dbl(
   .x,
   .y,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -92,6 +96,7 @@ pa_map2_chr(
   .x,
   .y,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -109,6 +114,7 @@ pa_map2_df(
   .x,
   .y,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -126,6 +132,7 @@ pa_map2_dfr(
   .x,
   .y,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -143,6 +150,7 @@ pa_map2_dfc(
   .x,
   .y,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -159,6 +167,7 @@ pa_map2_dfc(
 pa_pmap(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -175,6 +184,7 @@ pa_pmap(
 pa_pmap_lgl(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -191,6 +201,7 @@ pa_pmap_lgl(
 pa_pmap_int(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -207,6 +218,7 @@ pa_pmap_int(
 pa_pmap_dbl(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -223,6 +235,7 @@ pa_pmap_dbl(
 pa_pmap_chr(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -239,6 +252,7 @@ pa_pmap_chr(
 pa_pmap_df(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -255,6 +269,7 @@ pa_pmap_df(
 pa_pmap_dfr(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -271,6 +286,7 @@ pa_pmap_dfr(
 pa_pmap_dfc(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -287,6 +303,7 @@ pa_pmap_dfc(
 pa_pwalk(
   .l,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -326,6 +343,8 @@ converted to an extractor function. Character vectors index by
 name and numeric vectors index by position; use a list to index
 by position and name at different levels. If a component is not
 present, the value of \code{.default} will be returned.}
+
+\item{...}{Additional arguments passed on to the mapped function.}
 
 \item{cores}{(optional) Number of cores (i.e. workers) to be used. Default
 is: your computer CPU cores - 1}

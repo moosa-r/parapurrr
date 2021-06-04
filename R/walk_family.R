@@ -17,7 +17,7 @@
 #' @inherit purrr::map return
 #'
 #' @export
-pa_walk <- function(.x, .f,
+pa_walk <- function(.x, .f, ...,
                     cores = NULL,
                     adaptor = "doParallel", cluster_type = NULL,
                     splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -26,12 +26,13 @@ pa_walk <- function(.x, .f,
                     .inorder = TRUE,
                     .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map(x, .f))
+  int_fun <- .pa_call(purrr::map, x_split, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = NULL,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -71,7 +72,7 @@ pa_walk <- function(.x, .f,
 #' @inherit purrr::map2 return
 #'
 #' @export
-pa_walk2 <- function(.x, .y, .f,
+pa_walk2 <- function(.x, .y, .f, ...,
                      cores = NULL,
                      adaptor = "doParallel", cluster_type = NULL,
                      splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -80,12 +81,13 @@ pa_walk2 <- function(.x, .y, .f,
                      .inorder = TRUE,
                      .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map2(x$.x, x$.y, .f))
+  int_fun <- .pa_call(purrr::map2, x_split$.x, x_split$.y, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = .y,
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -125,7 +127,7 @@ pa_walk2 <- function(.x, .y, .f,
 #' @inherit purrr::imap return
 #'
 #' @export
-pa_iwalk <- function(.x, .f,
+pa_iwalk <- function(.x, .f, ...,
                      cores = NULL,
                      adaptor = "doParallel", cluster_type = NULL,
                      splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -134,12 +136,13 @@ pa_iwalk <- function(.x, .f,
                      .inorder = TRUE,
                      .verbose = FALSE) {
 
-  int_fun <- quote(purrr::map2(x$.x, x$.y, .f))
+  int_fun <- .pa_call(purrr::map2, x_split$.x, x_split$.y, .f, ...)
 
   output <- .pa_internal(.x = .x,
                          .y = .vec_index(.x),
                          .l = NULL,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,

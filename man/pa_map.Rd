@@ -14,6 +14,7 @@
 pa_map(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -30,6 +31,7 @@ pa_map(
 pa_map_lgl(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -46,6 +48,7 @@ pa_map_lgl(
 pa_map_int(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -62,6 +65,7 @@ pa_map_int(
 pa_map_dbl(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -78,6 +82,7 @@ pa_map_dbl(
 pa_map_chr(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -94,6 +99,7 @@ pa_map_chr(
 pa_map_df(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -110,6 +116,7 @@ pa_map_df(
 pa_map_dfr(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -126,6 +133,7 @@ pa_map_dfr(
 pa_map_dfc(
   .x,
   .f,
+  ...,
   cores = NULL,
   adaptor = "doParallel",
   cluster_type = NULL,
@@ -161,6 +169,8 @@ converted to an extractor function. Character vectors index by
 name and numeric vectors index by position; use a list to index
 by position and name at different levels. If a component is not
 present, the value of \code{.default} will be returned.}
+
+\item{...}{Additional arguments passed on to the mapped function.}
 
 \item{cores}{(optional) Number of cores (i.e. workers) to be used. Default
 is: your computer CPU cores - 1}

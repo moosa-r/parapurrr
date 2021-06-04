@@ -33,7 +33,7 @@
 
 #' @rdname pa_map2
 #' @export
-pa_pmap <- function(.l, .f,
+pa_pmap <- function(.l, .f, ...,
                     cores = NULL,
                     adaptor = "doParallel", cluster_type = NULL,
                     splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -42,7 +42,7 @@ pa_pmap <- function(.l, .f,
                     .inorder = TRUE,
                     .verbose = FALSE) {
 
-  int_fun <- quote(purrr::pmap(x, .f))
+  int_fun <- .pa_call(purrr::pmap, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -52,6 +52,7 @@ pa_pmap <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -74,7 +75,7 @@ pa_pmap <- function(.l, .f,
 
 #' @rdname pa_map2
 #' @export
-pa_pmap_lgl <- function(.l, .f,
+pa_pmap_lgl <- function(.l, .f, ...,
                         cores = NULL,
                         adaptor = "doParallel", cluster_type = NULL,
                         splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -83,7 +84,7 @@ pa_pmap_lgl <- function(.l, .f,
                         .inorder = TRUE,
                         .verbose = FALSE) {
 
-  int_fun <- quote(purrr::pmap_lgl(x, .f))
+  int_fun <- .pa_call(purrr::pmap_lgl, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -93,6 +94,7 @@ pa_pmap_lgl <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -115,7 +117,7 @@ pa_pmap_lgl <- function(.l, .f,
 
 #' @rdname pa_map2
 #' @export
-pa_pmap_int <- function(.l, .f,
+pa_pmap_int <- function(.l, .f, ...,
                         cores = NULL,
                         adaptor = "doParallel", cluster_type = NULL,
                         splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -124,7 +126,7 @@ pa_pmap_int <- function(.l, .f,
                         .inorder = TRUE,
                         .verbose = FALSE) {
 
-  int_fun <- quote(purrr::pmap_int(x, .f))
+  int_fun <- .pa_call(purrr::pmap_int, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -134,6 +136,7 @@ pa_pmap_int <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -156,7 +159,7 @@ pa_pmap_int <- function(.l, .f,
 
 #' @rdname pa_map2
 #' @export
-pa_pmap_dbl <- function(.l, .f,
+pa_pmap_dbl <- function(.l, .f, ...,
                         cores = NULL,
                         adaptor = "doParallel", cluster_type = NULL,
                         splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -165,7 +168,7 @@ pa_pmap_dbl <- function(.l, .f,
                         .inorder = TRUE,
                         .verbose = FALSE) {
 
-  int_fun <- quote(purrr::pmap_dbl(x, .f))
+  int_fun <- .pa_call(purrr::pmap_dbl, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -175,6 +178,7 @@ pa_pmap_dbl <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -197,7 +201,7 @@ pa_pmap_dbl <- function(.l, .f,
 
 #' @rdname pa_map2
 #' @export
-pa_pmap_chr <- function(.l, .f,
+pa_pmap_chr <- function(.l, .f, ...,
                         cores = NULL,
                         adaptor = "doParallel", cluster_type = NULL,
                         splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -206,7 +210,7 @@ pa_pmap_chr <- function(.l, .f,
                         .inorder = TRUE,
                         .verbose = FALSE) {
 
-  int_fun <- quote(purrr::pmap_chr(x, .f))
+  int_fun <- .pa_call(purrr::pmap_chr, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -216,6 +220,7 @@ pa_pmap_chr <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -238,7 +243,7 @@ pa_pmap_chr <- function(.l, .f,
 
 #' @rdname pa_map2
 #' @export
-pa_pmap_df <- function(.l, .f,
+pa_pmap_df <- function(.l, .f, ...,
                         cores = NULL,
                         adaptor = "doParallel", cluster_type = NULL,
                         splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -251,7 +256,7 @@ pa_pmap_df <- function(.l, .f,
     stop("`pmap_df()` requires dplyr.")
   }
 
-  int_fun <- quote(purrr::pmap(x, .f))
+  int_fun <- .pa_call(purrr::pmap, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -261,6 +266,7 @@ pa_pmap_df <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -283,7 +289,7 @@ pa_pmap_df <- function(.l, .f,
 
 #' @rdname pa_map2
 #' @export
-pa_pmap_dfr <- function(.l, .f,
+pa_pmap_dfr <- function(.l, .f, ...,
                         cores = NULL,
                         adaptor = "doParallel", cluster_type = NULL,
                         splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -296,7 +302,7 @@ pa_pmap_dfr <- function(.l, .f,
     stop("`pmap_dfr()` requires dplyr.")
   }
 
-  int_fun <- quote(purrr::pmap(x, .f))
+  int_fun <- .pa_call(purrr::pmap, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -306,6 +312,7 @@ pa_pmap_dfr <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -328,7 +335,7 @@ pa_pmap_dfr <- function(.l, .f,
 
 #' @rdname pa_map2
 #' @export
-pa_pmap_dfc <- function(.l, .f,
+pa_pmap_dfc <- function(.l, .f, ...,
                         cores = NULL,
                         adaptor = "doParallel", cluster_type = NULL,
                         splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -341,7 +348,7 @@ pa_pmap_dfc <- function(.l, .f,
     stop("`pmap_dfr()` requires dplyr.")
   }
 
-  int_fun <- quote(purrr::pmap(x, .f))
+  int_fun <- .pa_call(purrr::pmap, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -351,6 +358,7 @@ pa_pmap_dfc <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
@@ -373,7 +381,7 @@ pa_pmap_dfc <- function(.l, .f,
 
 #' @rdname pa_map2
 #' @export
-pa_pwalk <- function(.l, .f,
+pa_pwalk <- function(.l, .f, ...,
                     cores = NULL,
                     adaptor = "doParallel", cluster_type = NULL,
                     splitter = NULL, auto_export = TRUE, .export = NULL,
@@ -382,7 +390,7 @@ pa_pwalk <- function(.l, .f,
                     .inorder = TRUE,
                     .verbose = FALSE) {
 
-  int_fun <- quote(purrr::pmap(x, .f))
+  int_fun <- .pa_call(purrr::pmap, x_split, .f, ...)
 
   if (is.data.frame(.l)) {
     .l <- as.list(.l)
@@ -392,6 +400,7 @@ pa_pwalk <- function(.l, .f,
                          .y = NULL,
                          .l = .l,
                          .f = .f,
+                         ... = ...,
                          int_fun = int_fun,
                          adaptor = adaptor,
                          cores = cores,
