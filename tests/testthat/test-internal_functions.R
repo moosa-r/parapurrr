@@ -16,26 +16,26 @@ test_that("splitter_works", {
 
 test_that(".l_recycler works", {
   .l <- list(x = 1,
-            y = c("a", "b", "c", "d", "e"),
-            z = 6)
+             y = c("a", "b", "c", "d", "e"),
+             z = 6)
   expect_identical(object = .l_recycler(.l),
                    expected = list(x = c(1,1,1,1,1),
                                    y = c("a", "b", "c", "d", "e"),
                                    z = c(6,6,6,6,6)))
   .l <- list(x = 1,
-            y = c("a", "b", "c", "d", "e"),
-            z = 6:8)
+             y = c("a", "b", "c", "d", "e"),
+             z = 6:8)
   expect_error(object = .l_recycler(.l))
 
   .l <- list(x = 1:5,
-            y = c("a", "b", "c", "d", "e"),
-            z = 6:10)
+             y = c("a", "b", "c", "d", "e"),
+             z = 6:10)
   expect_identical(object = .l_recycler(.l),
                    expected = .l)
 
   .l <- list(x = 1:5,
-            y = c("a", "b", "c", "d", "e"),
-            z = NULL)
+             y = c("a", "b", "c", "d", "e"),
+             z = NULL)
   expect_error(object = .l_recycler(.l))
 
 })
