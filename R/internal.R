@@ -1,113 +1,4 @@
-#' Create a call to be applied to input segments
-#'
-#' Creates a call object to be later evaluated in parallel and be applied
-#'   to each splitte inputs.
-#'
-#' It handles ellipsis in the exported function's environment not in the
-#'   spawned/forked instances, thus it is safer and less bug-prone.
-#'
-#' @param fun (class = function) a function to be passed to "what" argument in
-#'   do.call
-#' @param ... arguments to be passed to "arg" argument in do.call
-#'
-#' @return A call object
-#' @noRd
-.pa_call <- function(fun, ...) {
-  call("do.call",
-       what = substitute(fun),
-       args = substitute(list(...)))
-}
-
-#' Update export list with objects used in the .f
-#'
-#' To mimic automatic variable exporting in foreach, this function will
-#'   add any object from the calling environment that is being called within
-#'   the .f supplied by the user.
-#'
-#' @param env (environment) The evaluation environment of foreach
-#' @param .f (function) as_mapper version of .f supplied by the user
-#' @param auto_export (logical) auto_export argument of the exported functions
-#' @param .export (Character) .export argument of the exported function
-#'
-#' @return A character vector
-#' @noRd
-.pa_export <- function(env, .f, .export, ...) {
-  funs <- as.character(c(enquote(.f),
-                         substitute(list(...))
-                         ))
-  objs <- rlang::env_names(env)
-  objs <- objs[vapply(X = objs,
-                      FUN = function(string) {
-                        any(grepl(pattern = sprintf("(?<!(\\.|\\w|\\\"|\\\'))%s(?!(\\.|\\w|\\\"|\\\'))", string),
-                                  perl = TRUE,
-                                  x = funs))
-                      },
-                      FUN.VALUE = logical(1))]
-  .export <- unique(c(.export, objs))
-  return(.export)
-}
-
-#' Disable automatic doPar backend registering
-#'
-#' By default, parapurrr automatically register doPar backends for you.
-#'   based the provided "adaptor" argument in the function call, parapurrr will
-#'   automatically handle (initiate, register and terminate) the selected
-#'   doPar backend and it's relevent infrastructures.
-#'   But you can disable this behaviour and force
-#'   manual control of the doPar backend. To do that your can: \enumerate{
-#'   \item Call manual_register(TRUE) once in your R session. After that,
-#'    any value for "adaptor" argument in parapurrrr function calls will be
-#'    ignored and you will have to manually handle the doPAr backend.
-#'   \item Call any parapurrr function with adaptor = NULL.}
-#'
-#' @param force (logical) Stop automatic handling the doPar backend by
-#'   parapurrr? Enter TRUE to stop automatic handling of dopar backends and
-#'   force the manual mode.
-#'
-#' @return Nothing, Internally will change the corresponding option in R
-#'   environment
-#' @export
-#' @examples
-#' \dontrun{ manual_register(TRUE) }
-manual_register <- function(force) {
-  if (!is.null(force) && !is.na(force) & is.logical(force)) {
-    options(pa_manual_register = force)
-  } else {
-    stop("force should be either TRUE or FALSE.", call. = FALSE)
-  }
-  invisible()
-}
-
-#' Use doRNG package for reproducibility
-#'
-#' doRNG package provides functions to perform reproducible parallel foreach
-#'   loops. By calling this function, you can force parapurrr to use doRNG
-#'   with combination of your any selected doPar adaptor to create fully
-#'   reproducible parallel function calls. see:
-#'   \href{https://cran.r-project.org/package=doRNG}{doRNG:
-#'   Generic Reproducible Parallel Backend for 'foreach' Loops}
-#'
-#' @param dorng (logical) Use doRNG instead of normal foreach loops?
-#'
-#' @return Nothing, Internally will change the corresponding option in R
-#'   environment
-#' @export
-#' @examples
-#' \dontrun{
-#' use_doRNG(TRUE)
-#' set.seed(100)
-#' x <- pa_map(1:3, runif)
-#' set.seed(100)
-#' y <- pa_map(1:3, runif)
-#' identical(x,y)}
-use_doRNG <- function(dorng) {
-  if (!is.null(dorng) && !is.na(dorng) & is.logical(dorng)) {
-    options(pa_dorng = dorng)
-  } else {
-    stop("dorng should be either TRUE or FALSE.", call. = FALSE)
-  }
-  invisible()
-}
+### Arguments Checks ####
 
 #' Argument check for user's input
 #'
@@ -169,7 +60,7 @@ use_doRNG <- function(dorng) {
   if (!(length(auto_export) == 1L &&
         (auto_export == "all" || ( !is.na(auto_export) &&
                                    is.logical(auto_export)))
-        )) {
+  )) {
     stop("auto_export should be, \"all\", 'TRUE' or 'FALSE'.", call. = FALSE)
   }
 
@@ -179,15 +70,95 @@ use_doRNG <- function(dorng) {
          call. = FALSE)
   }
 
-  if (getOption("pa_manual_register") && !is.null(adaptor)) {
+  if (getOption("pa_manual_backend") && !is.null(adaptor)) {
     warning("adaptor = ", adaptor,
             " is ignored, because forcing manual backend handling was enabled.\n",
             "To revert that and re-enable automatic backend registeration, run:",
-            "manual_register(FALSE)",
+            "manual_backend(FALSE)",
             immediate. = TRUE, call. = FALSE)
   }
 
   invisible()
+}
+
+#' Check User-Provided Splitter
+#'
+#' Check if the custom splitter provided by the user is valid; i.e. it is a
+#'   list with numeric elements and its elements have a one-to-one
+#'   correspondence with the indexes of .x elements.
+#'
+#' @param x_length Length of .x argument
+#' @param splitter User-provided splitter. A list with numeric vectors.
+#'
+#' @return Nothing! If the splitter is not valid, code execution will be
+#'   stopped.
+#' @noRd
+.splitter_check <- function(x_length, splitter) {
+  ss <- unlist(splitter)
+  if (!is.list(splitter) ||
+      !rlang::is_integerish(ss)) {
+    stop("Splitter should be a list where each of its elements is an integer or integer-like (without decimal points) vector.",
+         call. = FALSE)
+  }
+  ss <- as.integer(ss)
+  if (length(ss) != x_length ||
+      !setequal(ss, seq_len(x_length))
+  ) {
+    stop("Splitter contents should have a one-to-one correspondence with the indexes of .x elements.",
+         call. = FALSE)
+  }
+  invisible()
+}
+
+#### Handle Variables ####
+
+#' Update export list with objects used in the .f
+#'
+#' To mimic automatic variable exporting in foreach, this function will
+#'   add any object from the calling environment that is being called within
+#'   the .f supplied by the user.
+#'
+#' @param env (environment) The evaluation environment of foreach
+#' @param .f (function) as_mapper version of .f supplied by the user
+#' @param auto_export (logical) auto_export argument of the exported functions
+#' @param .export (Character) .export argument of the exported function
+#'
+#' @return A character vector
+#' @noRd
+.pa_export <- function(env, .f, .export, ...) {
+  funs <- as.character(c(enquote(.f),
+                         substitute(list(...))
+  ))
+  objs <- rlang::env_names(env)
+  objs <- objs[vapply(X = objs,
+                      FUN = function(string) {
+                        any(grepl(pattern = sprintf("(?<!(\\.|\\w|\\\"|\\\'))%s(?!(\\.|\\w|\\\"|\\\'))", string),
+                                  perl = TRUE,
+                                  x = funs))
+                      },
+                      FUN.VALUE = logical(1))]
+  .export <- unique(c(.export, objs))
+  return(.export)
+}
+
+#' Create a call to be applied to input segments
+#'
+#' Creates a call object to be later evaluated in parallel and be applied
+#'   to each splitted input.
+#'
+#' It handles ellipsis in the exported function's environment not in the
+#'   spawned/forked instances, thus it is safer and less bug-prone.
+#'
+#' @param fun (class = function) a function to be passed to "what" argument in
+#'   do.call
+#' @param ... arguments to be passed to "arg" argument in do.call
+#'
+#' @return A call object
+#' @noRd
+.pa_call <- function(fun, ...) {
+  call("do.call",
+       what = substitute(fun),
+       args = substitute(list(...)))
 }
 
 #' Handle Main Parallel Arguments with manual backend registering
@@ -222,8 +193,8 @@ use_doRNG <- function(dorng) {
   } else {
     cores <- 1
     cluster_type <- "Sequential"
-    if (is.null(adaptor) || getOption("pa_manual_register")) {
-      warning("By calling manual_register(TRUE) or providing adaptor = NULL, ",
+    if (is.null(adaptor) || getOption("pa_manual_backend")) {
+      warning("By calling manual_backend(TRUE) or providing adaptor = NULL, ",
               "you have forced manual doPar backend handeling;\n",
               "But you did `not` register any backends before calling this function:\n",
               "*** Running your code in `Sequential` mode. ***",
@@ -255,34 +226,7 @@ use_doRNG <- function(dorng) {
               "parts" = parts))
 }
 
-#' Check User-Provided Splitter
-#'
-#' Check if the custom splitter provided by the user is valid; i.e. it is a
-#'   list with numeric elements and its elements have a one-to-one
-#'   correspondence with the indexes of .x elements.
-#'
-#' @param x_length Length of .x argument
-#' @param splitter User-provided splitter. A list with numeric vectors.
-#'
-#' @return Nothing! If the splitter is not valid, code execution will be
-#'   stopped.
-#' @noRd
-.splitter_check <- function(x_length, splitter) {
-  ss <- unlist(splitter)
-  if (!is.list(splitter) ||
-      !rlang::is_integerish(ss)) {
-    stop("Splitter should be a list where each of its elements is an integer or integer-like (without decimal points) vector.",
-         call. = FALSE)
-  }
-  ss <- as.integer(ss)
-  if (length(ss) != x_length ||
-      !setequal(ss, seq_len(x_length))
-  ) {
-    stop("Splitter contents should have a one-to-one correspondence with the indexes of .x elements.",
-         call. = FALSE)
-  }
-  invisible()
-}
+
 
 #' Handle Main Parallel Arguments
 #'
@@ -405,7 +349,7 @@ use_doRNG <- function(dorng) {
               "parts" = parts))
 }
 
-
+#### Handle Backend and Clusters ####
 #' Register Clusters
 #' Register Clusters necessary for foreach function. currently only doParallel
 #'   adaptor is supported, other adaptors will be implemented in the future.
@@ -526,6 +470,8 @@ use_doRNG <- function(dorng) {
   invisible()
 }
 
+#### Main Wrapper ####
+
 #' Internal backbone of parapurrr functions
 #' This function is the only function that will be called by map, map2, and
 #'   imap function families. every necessary steps from handling user input,
@@ -599,7 +545,7 @@ use_doRNG <- function(dorng) {
                 cores = cores)
 
   # Handle manual backend registering
-  manual_backend <- getOption("pa_manual_register") || is.null(adaptor)
+  manual_backend <- getOption("pa_manual_backend") || is.null(adaptor)
 
   if (manual_backend) {
     int_args <- .pa_args_manual(x_length = ifelse(test = is.null(.l),

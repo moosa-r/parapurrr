@@ -13,6 +13,7 @@
 ####  Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>  ##
 ##############################################################################
 
+#' @noRd
 probe <- function(.x, .p, ...) {
   ## Directly Copied from purrr's source and redistributed under GPL-3 licence. ##
   ## Copyright owners are purrr authors:   ##
@@ -26,6 +27,7 @@ probe <- function(.x, .p, ...) {
   }
 }
 
+#' @noRd
 check_tidyselect <- function(){
   ## Directly Copied from purrr's source and redistributed under GPL-3 licence. ##
   ## Copyright owners are purrr authors:   ##
@@ -36,6 +38,7 @@ check_tidyselect <- function(){
   }
 }
 
+#' @noRd
 at_selection <- function(nm, .at){
   ## Directly Copied from purrr's source and redistributed under GPL-3 licence. ##
   ## Copyright owners are purrr authors:   ##
@@ -48,6 +51,7 @@ at_selection <- function(nm, .at){
   .at
 }
 
+#' @noRd
 inv_which <- function(x, sel) {
   ## Directly Copied from purrr's source and redistributed under GPL-3 licence. ##
   ## Copyright owners are purrr authors:   ##
