@@ -24,6 +24,23 @@ test_that("ellipsis is passed down", {
                    expected = purrr::pmap(list(".x", ".y", ".z"), elip, dot = NA, dotdot = NULL))
 })
 
+test_that("Manual backends work", {
+  # Can be forced
+  expect_warning(object = pa_map(1:3, sqrt, adaptor = NULL),
+                 regexp = "Sequential")
+  manual_register(TRUE)
+  expect_match(object = capture_warnings(pa_map(1:3, sqrt)),
+                 regexp = "manual")
+  # works
+  expect_length(object = suppressWarnings(unique(pa_map(1:3, ~Sys.getpid()))),
+                n = 1)
+  doParallel::registerDoParallel(n_cores)
+  expect_length(object = suppressWarnings(unique(pa_map(1:3, ~Sys.getpid()))),
+                n = n_cores)
+  # revert
+  manual_register(FALSE)
+})
+
 test_that("Export works as intended", {
   # auto export object in the calling environment
   nested_map <- function() {
@@ -61,4 +78,33 @@ test_that("Export works as intended", {
                                               .packages = "rlang", .verbose = TRUE)),
                regexp = "rlang", all = FALSE)
 
+  ## different mods of auto_export works
+  nested4_map <- function(...) {
+    should_export <- 123
+    shouldnt_export <- 456
+    capture.output(pa_map(1:2, ...,
+                          cores = n_cores, .verbose = TRUE))
+  }
+  ## auto export Works as intended
+  # auto_export = TRUE
+  expect_match(object = nested4_map(paste, should_export, auto_export = TRUE),
+               regexp = "should_export", all = FALSE)
+  expect_false(object = any(grepl(pattern = "shouldnt_export",
+                                  x = nested4_map(paste, should_export, auto_export = TRUE))))
+  expect_false(object = any(grepl(pattern = "shouldnt_export|should_export",
+                                  x = nested4_map(paste, auto_export = TRUE))))
+  # auto_export = FALSE
+  expect_error(object = nested4_map(paste, should_export, auto_export = FALSE),
+               regexp = "should_export")
+  expect_match(object = nested4_map(paste, should_export, auto_export = FALSE,
+                                    .export = "should_export"),
+               regexp = "should_export", all = FALSE)
+  # auto_export = "all"
+  expect_true(object = any(grepl(pattern = "shouldnt_export|should_export",
+                                  x = nested4_map(paste, auto_export = "all"))))
+  # do scoping properly
+  should_find <- 789
+  expect_match(object = nested4_map(paste, should_find, auto_export = FALSE,
+                                    .export = "should_find"),
+               regexp = "should_find", all = FALSE)
 })
