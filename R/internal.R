@@ -205,7 +205,7 @@ use_doRNG <- function(dorng) {
 #'   handled to downstream internal functions.
 #' @noRd
 .pa_args_manual <- function(x_length,
-                            cores = NULL,
+                            user_cores = NULL,
                             adaptor = NULL,
                             splitter = NULL) {
 
@@ -213,12 +213,10 @@ use_doRNG <- function(dorng) {
   if (foreach::getDoParRegistered() &&
       foreach::getDoParName() != "doSEQ") {
     cluster_type <- foreach::getDoParName()
-    if (!rlang::is_integerish(cores)) {
-      cores <- foreach::getDoParWorkers()
-    } else if (foreach::getDoParWorkers() != cores) {
-      warning("You have provided cores = ", cores,
-              " but registered a doPar backend ", foreach::getDoParName(),
-              " with ", foreach::getDoParWorkers(), " workers",
+    cores <- as.integer(foreach::getDoParWorkers())
+    if (!is.null(user_cores) && user_cores != cores) {
+      warning(sprintf("You have supplied `cores = %s` but registered a doPar backend `%s`, with `%s` workers",
+                      user_cores, cluster_type, cores),
               call. = FALSE)
     }
   } else {
@@ -607,7 +605,7 @@ use_doRNG <- function(dorng) {
     int_args <- .pa_args_manual(x_length = ifelse(test = is.null(.l),
                                                   yes = length(.x),
                                                   no = length(.l[[1]])),
-                                cores = cores,
+                                user_cores = cores,
                                 adaptor = adaptor,
                                 splitter = splitter)
   } else {
