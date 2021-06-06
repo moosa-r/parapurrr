@@ -18,6 +18,35 @@
        args = substitute(list(...)))
 }
 
+#' Update export list with objects used in the .f
+#'
+#' To mimic automatic variable exporting in foreach, this function will
+#'   add any object from the calling environment that is being called within
+#'   the .f supplied by the user.
+#'
+#' @param env (environment) The evaluation environment of foreach
+#' @param .f (function) as_mapper version of .f supplied by the user
+#' @param auto_export (logical) auto_export argument of the exported functions
+#' @param .export (Character) .export argument of the exported function
+#'
+#' @return A character vector
+#' @noRd
+.pa_export <- function(env, .f, .export, ...) {
+  funs <- as.character(c(enquote(.f),
+                         substitute(list(...))
+                         ))
+  objs <- rlang::env_names(env)
+  objs <- objs[vapply(X = objs,
+                      FUN = function(string) {
+                        any(grepl(pattern = sprintf("(?<!(\\.|\\w|\\\"|\\\'))%s(?!(\\.|\\w|\\\"|\\\'))", string),
+                                  perl = TRUE,
+                                  x = funs))
+                      },
+                      FUN.VALUE = logical(1))]
+  .export <- unique(c(.export, objs))
+  return(.export)
+}
+
 #' Disable automatic doPar backend registering
 #'
 #' By default, parapurrr automatically register doPar backends for you.
@@ -138,9 +167,10 @@ use_doRNG <- function(dorng) {
   }
 
   if (!(length(auto_export) == 1L &&
-        !is.na(auto_export) &&
-        is.logical(auto_export))) {
-    stop("auto_export should be 'TRUE' or 'FALSE'.", call. = FALSE)
+        (auto_export == "all" || ( !is.na(auto_export) &&
+                                   is.logical(auto_export)))
+        )) {
+    stop("auto_export should be, \"all\", 'TRUE' or 'FALSE'.", call. = FALSE)
   }
 
   if (!is.null(cores) &&
@@ -611,66 +641,60 @@ use_doRNG <- function(dorng) {
                             }
                           })
 
-  # update export:
-  if (auto_export) {
-    .export <- unique(c(.export, ls(envir = parent.frame(2))))
-  }
-
-  for (obj_i in seq_along(.export)) {
-    assign(x = .export[[obj_i]],
-           value = rlang::env_get(env = parent.frame(2),
-                                  nm = .export[[obj_i]],
-                                  default = stop(),
-                                  inherit = TRUE))
-  }
-
-  # perform!
-  `%performer%` <- ifelse(int_args$cores > 1,
-                          yes = ifelse(getOption("pa_dorng"),
-                                       yes = doRNG::`%dorng%`,
-                                       no = foreach::`%dopar%`),
-                          no = foreach::`%do%`)
-
+  # Prepare the environment
   .f <- purrr::as_mapper(.f, ...)
 
-  output <- foreach::foreach(x_split = foreach_input,
-                             .combine = .combine,
-                             .init = .init,
-                             .final = .final,
-                             .inorder = .inorder,
-                             .multicombine = .multicombine,
-                             .maxcombine = max(2,
-                                               .maxcombine,
-                                               int_args$cores),
-                             .errorhandling = .errorhandling,
-                             .packages = .packages,
-                             .export = c(.export, ".f", "int_fun"),
-                             .noexport = c(.noexport,
-                                           ".combine",
-                                           ".errorhandling",
-                                           ".export",
-                                           ".final",
-                                           ".init",
-                                           ".inorder",
-                                           ".maxcombine",
-                                           ".multicombine",
-                                           ".noexport",
-                                           ".packages",
-                                           ".verbose",
-                                           ".x",
-                                           ".y",
-                                           "adaptor",
-                                           "cl",
-                                           "cluster_type",
-                                           "cores",
-                                           "int_args",
-                                           "int_fun",
-                                           "manual_register",
-                                           "obj_i",
-                                           "performer"),
-                             .verbose = .verbose) %performer% {
-                               output <- eval(int_fun)
-                               return(output)
-                             }
+  if (auto_export == "all") {
+    eval_env <- rlang::env_clone(env = parent.frame(2))
+    .export <- unique(c(.export, ls(envir = eval_env)))
+  } else {
+    eval_env <- new.env(parent = parent.frame(2))
+    if (auto_export) {
+      .export <- .pa_export(env = parent.frame(2),
+                            .f = .f,
+                            .export = .export,
+                            ...)
+    }
+  }
+
+  # build foreach object
+  foreach_obj <- foreach::foreach(x_split = foreach_input,
+                                  .combine = .combine,
+                                  .init = .init,
+                                  .final = .final,
+                                  .inorder = .inorder,
+                                  .multicombine = .multicombine,
+                                  .maxcombine = max(2,
+                                                    .maxcombine,
+                                                    int_args$cores),
+                                  .errorhandling = .errorhandling,
+                                  .packages = .packages,
+                                  .export = c(.export, ".f", "int_fun"),
+                                  .noexport = c("%performer%",
+                                                ".f",
+                                                "foreach_obj",
+                                                "foreach_input",
+                                                "int_fun"),
+                                  .verbose = .verbose)
+
+  # Update evaluation environment
+  rlang::env_bind(.env = eval_env,
+                  `%performer%` = ifelse(int_args$cores > 1,
+                                         yes = ifelse(getOption("pa_dorng"),
+                                                      yes = doRNG::`%dorng%`,
+                                                      no = foreach::`%dopar%`),
+                                         no = foreach::`%do%`),
+                  .f = .f,
+                  foreach_obj = foreach_obj,
+                  int_fun = int_fun
+  )
+
+  # perform!
+  output <- rlang::eval_bare(env = eval_env,
+                             expr = quote(
+                               foreach_obj %performer% {
+                                 output <- eval(int_fun)
+                                 return(output)})
+  )
   return(output)
 }
