@@ -108,9 +108,9 @@ test_that("manual backend can be forced", {
                  regexp = "Sequential")
 
   expect_false(object = was_parallel(adaptor = NULL))
-  manual_register(TRUE)
+  manual_backend(TRUE)
   expect_false(object = was_parallel())
-  manual_register(FALSE)
+  manual_backend(FALSE)
   expect_true(object = was_parallel(cores = n_cores))
 })
 

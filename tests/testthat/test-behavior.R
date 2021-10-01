@@ -28,7 +28,7 @@ test_that("Manual backends work", {
   # Can be forced
   expect_warning(object = pa_map(1:3, sqrt, adaptor = NULL),
                  regexp = "Sequential")
-  manual_register(TRUE)
+  manual_backend(TRUE)
   expect_match(object = capture_warnings(pa_map(1:3, sqrt)),
                  regexp = "manual")
   # works
@@ -38,7 +38,7 @@ test_that("Manual backends work", {
   expect_length(object = suppressWarnings(unique(pa_map(1:3, ~Sys.getpid()))),
                 n = n_cores)
   # revert
-  manual_register(FALSE)
+  manual_backend(FALSE)
 })
 
 test_that("Export works as intended", {
@@ -107,4 +107,10 @@ test_that("Export works as intended", {
   expect_match(object = nested4_map(paste, should_find, auto_export = FALSE,
                                     .export = "should_find"),
                regexp = "should_find", all = FALSE)
+  # Variables in formula notations are also exported
+  should_exported_in_formula <- 10
+  expect_identical(object = purrr::map(1:4, ~.x * should_exported_in_formula),
+                   expected = pa_map(1:4, ~.x * should_exported_in_formula,
+                                     cores = n_cores))
+
 })
