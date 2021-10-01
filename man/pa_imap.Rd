@@ -9,7 +9,7 @@
 \alias{pa_imap_df}
 \alias{pa_imap_dfr}
 \alias{pa_imap_dfc}
-\title{Parallel Version of purrr imap family}
+\title{Parallel version of purrr imap family}
 \usage{
 pa_imap(
   .x,
@@ -172,51 +172,62 @@ present, the value of \code{.default} will be returned.}
 
 \item{...}{Additional arguments passed on to the mapped function.}
 
-\item{cores}{(optional) Number of cores (i.e. workers) to be used. Default
-is: your computer CPU cores - 1}
+\item{cores}{(Optional) Number of cores (i.e. workers) to be used. The
+default value is: Available CPU cores - 1}
 
 \item{adaptor}{The foreach adaptor to be used. Available options are:
-\itemize{\item "doParallel" (default) \item "doMPI" \item "doSNOW"
-\item "doFuture"}}
+\itemize{
+\item "doParallel" (default)
+\item "doFuture"
+\item "doMC"
+\item "doMPI"
+\item "doSNOW"}}
 
 \item{cluster_type}{The Clusters architecture to be used with the selected
 adaptor. Note that allowed values for this argument depends on the
 "adaptor" argument: \enumerate{
-\item if adaptor is doParallel":
+\item If adaptor is "doParallel":
   \itemize{
     \item in windows OS: "PSOCK" (default for Windows)
     \item in Unix-based OS: "FORK" (default for Unix), "PSOCK"
     }
-\item if adaptor is doMPI:
-  \itemize{
-    \item No cluster_type options here, let cluster_type be NULL
-    }
-\item if adaptor is "doSNOW":
-  \itemize{
-  \item in windows OS: "SOCK" (default for Windows)
-  \item in Unix-based OS: "MPI" (default for Unix), "NWS", "SOCK"
-  }
-\item if adaptor is "doFuture":
+\item If adaptor is "doFuture":
   \itemize{
   \item in windows OS: "multisession" (default for Windows),
     "cluster_PSOCK"
   \item in Unix-based OS: "multicore" (default for Unix), "multisession",
     "cluster_FORK", "cluster_PSOCK"
   }
+\item If adaptor is "doMC":
+  \itemize{
+    \item No cluster_type options here, let cluster_type be NULL
+    }
+\item If adaptor is "doMPI":
+  \itemize{
+    \item No cluster_type options here, let cluster_type be NULL
+    }
+\item If adaptor is "doSNOW":
+  \itemize{
+  \item in windows OS: "SOCK" (default for Windows)
+  \item in Unix-based OS: "MPI" (default for Unix), "NWS", "SOCK"
+  }
 }}
 
-\item{splitter}{(optional) Use this argument to instruct parapurrr how to
-handle your input elements to the available cores. The Splitter is a
-list where each of its elements is a numeric vector. Each numeric vector
-corresponds to a core, and the elements of each vector should be indexes
-of .x input's elements; Collectively they should have a one-to-one
-correspondence with .x indexes. See the Vignettes for further explanations
-and examples.}
+\item{splitter}{(Optional) Explicitly instruct parapurrr how to pass
+your input elements to the workers. Splitter should be alist where
+each of its elements is a vector of integers or integer-like numbers
+(i.e. no decimal points) of the indexes of your input elements.
+Collectively they should have a one-to-one correspondence with .x
+indexes. See the Vignettes for further explanation and examples.}
 
-\item{auto_export}{(default = TRUE) Should variables in the function's
-calling environment be exported to workers? Default is set to TRUE for
-convenience; But to improve the performance, consider turning auto_export
-off and manually setting the exported variables using .export argument.}
+\item{auto_export}{(TRUE (default), FALSE or "all") Should parapurrr
+export the detected objects used in .f, from the function's calling
+frame to the workers? Default is set to TRUE for convenience, but to
+improve the performance, consider turning  auto_export off and manually
+supply the exported variables using .export argument.  "all" is the
+most conservative and yet, potentially resource-demanding option. It
+will clone the function's calling environment, and export every
+variable to the workers, whether used or not.}
 
 \item{.export}{character vector of variables to export.
 This can be useful when accessing a variable that isn't defined in the
@@ -257,14 +268,15 @@ very useful for trouble shooting.}
 A vector the same length as \code{.x}.
 }
 \description{
-The syntax and the logic of pa_imap* functions are the identical to purrr's
-  map functions. Please refer to \code{\link[purrr]{imap}} if you are not
+The syntax and the logic of pa_imap* functions are identical to purrr's
+  imap functions. Please refer to \code{\link[purrr]{imap}} if you are not
   familiar with purrr mapping style. Except .x and .f, other arguments are
-  optional and control the parallelization processes. They will be handled
-  to foreach function and the selected forreach adaptor.
+  optional and control the parallelization processes.
 }
 \details{
-Note that except cores, cluster_type, and adaptor, documentation of other
-  arguments, return section, and examples section are automatically imported
-  from purrr and foreach packages.
+Note that except cores, cluster_type, adaptor, auto_export, and splitter,
+  documentation of other arguments, return section, and examples section
+  are automatically imported from
+  \href{https://cran.r-project.org/package=purrr}{purrr} and
+  \href{https://cran.r-project.org/package=foreach}{foreach} packages.
 }

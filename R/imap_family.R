@@ -16,17 +16,18 @@
   }
 }
 
-#' Parallel Version of purrr imap family
+#' Parallel version of purrr imap family
 #'
-#' The syntax and the logic of pa_imap* functions are the identical to purrr's
-#'   map functions. Please refer to \code{\link[purrr]{imap}} if you are not
+#' The syntax and the logic of pa_imap* functions are identical to purrr's
+#'   imap functions. Please refer to \code{\link[purrr]{imap}} if you are not
 #'   familiar with purrr mapping style. Except .x and .f, other arguments are
-#'   optional and control the parallelization processes. They will be handled
-#'   to foreach function and the selected forreach adaptor.
+#'   optional and control the parallelization processes.
 #'
-#' Note that except cores, cluster_type, and adaptor, documentation of other
-#'   arguments, return section, and examples section are automatically imported
-#'   from purrr and foreach packages.
+#' Note that except cores, cluster_type, adaptor, auto_export, and splitter,
+#'   documentation of other arguments, return section, and examples section
+#'   are automatically imported from
+#'   \href{https://cran.r-project.org/package=purrr}{purrr} and
+#'   \href{https://cran.r-project.org/package=foreach}{foreach} packages.
 #'
 #' @inheritParams purrr::imap
 #' @inheritParams foreach::foreach

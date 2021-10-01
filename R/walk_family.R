@@ -1,14 +1,15 @@
 #' Parallel Version of purrr walk function
 #'
-#' The syntax and the logic of pa_walk functions are the identical to purrr's
+#' The syntax and the logic of pa_walk family functions are identical to purrr's
 #'   walk function. Please refer to \code{\link[purrr]{map}} if you are not
 #'   familiar with purrr mapping style. Except .x and .f, other arguments are
-#'   optional and control the parallelization processes. They will be handled
-#'   to foreach function and the selected forreach adaptor.
+#'   optional and control the parallelization processes.
 #'
-#' Note that except cores, cluster_type, and adaptor, documentation of other
-#'   arguments, return section, and examples section are automatically imported
-#'   from purrr and foreach packages.
+#' Note that except cores, cluster_type, adaptor, auto_export, and splitter,
+#'   documentation of other arguments, return section, and examples section
+#'   are automatically imported from
+#'   \href{https://cran.r-project.org/package=purrr}{purrr} and
+#'   \href{https://cran.r-project.org/package=foreach}{foreach} packages.
 #'
 #' @inheritParams purrr::map
 #' @inheritParams foreach::foreach

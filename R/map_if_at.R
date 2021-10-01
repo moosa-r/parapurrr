@@ -1,7 +1,7 @@
 #' Detect incorrect splitter in map_if and map_at
 #'
 #' Check if the custom splitter provided by the user is valid for pa_map_if
-#'   and pa_map_at. one source of confusion would be the case that the user
+#'   and pa_map_at. One source of confusion would be the case that the user
 #'   provides the splitter for .x not the selected elements of .x (by .p and
 #'   .at). This function will detects this issue and warns the user
 #'
@@ -32,15 +32,17 @@
 
 #' Parallel Version of purrr map_if and map_at function
 #'
-#' The syntax and the logic of pa_walk functions are the identical to purrr's
-#'   walk function. Please refer to \code{\link[purrr]{map}} if you are not
-#'   familiar with purrr mapping style. Except .x and .f, other arguments are
-#'   optional and control the parallelization processes. They will be handled
-#'   to foreach function and the selected forreach adaptor.
+#' The syntax and the logic of pa_map_if and pa_map_at functions are
+#'   identical to purrr's map_if and map_at
+#'   functions. Please refer to \code{\link[purrr]{map_if}} if you are not
+#'   familiar with purrr mapping style. Except .x, .f, and .p or .at other
+#'   arguments are  optional and control the parallelization processes.
 #'
-#' Note that except cores, cluster_type, and adaptor, documentation of other
-#'   arguments, return section, and examples section are automatically imported
-#'   from purrr and foreach packages.
+#' Note that except cores, cluster_type, adaptor, auto_export, and splitter,
+#'   documentation of other arguments, return section, and examples section
+#'   are automatically imported from
+#'   \href{https://cran.r-project.org/package=purrr}{purrr} and
+#'   \href{https://cran.r-project.org/package=foreach}{foreach} packages.
 #'
 #' @inheritParams purrr::map_if
 #' @inheritParams foreach::foreach

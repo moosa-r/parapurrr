@@ -1,14 +1,16 @@
 #' Parallel Version of purrr map2 family
 #'
-#' The syntax and the logic of pa_map2* functions are the identical to purrr's
+#' The syntax and the logic of pa_map2 and pa_pmap family functions are
+#'   identical to purrr's
 #'   map functions. Please refer to \code{\link[purrr]{map2}} if you are not
-#'   familiar with purrr mapping style. Except .x, .y, and .f, other arguments
-#'   are optional and control the parallelization processes. They will be
-#'   handled to foreach function and the selected foreach adaptor.
+#'   familiar with purrr mapping style. Except .x, .y or .l, and .f, other
+#'   arguments are optional and control the parallelization processes.
 #'
-#' Note that except cores, cluster_type, and adaptor, documentation of other
-#'   arguments, return section, and examples section are automatically imported
-#'   from purrr and foreach packages.
+#' Note that except cores, cluster_type, adaptor, auto_export, and splitter,
+#'   documentation of other arguments, return section, and examples section
+#'   are automatically imported from
+#'   \href{https://cran.r-project.org/package=purrr}{purrr} and
+#'   \href{https://cran.r-project.org/package=foreach}{foreach} packages.
 #'
 #' @inheritParams purrr::map2
 #' @inheritParams foreach::foreach

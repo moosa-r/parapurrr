@@ -31,9 +31,9 @@ knitr::opts_chunk$set(echo = TRUE,
 
 # Short -Yet Enough- Introduction
 
-Run [purrr](https://cran.r-project.org/package=purrr "purrr: Functional Programming Tools")'s mapping functions in parallel (i.e., incorporate multiple CPU cores instead of the default, one). The package parapurrr does that by connecting [purrr](https://cran.r-project.org/package=purrr "purrr: Functional Programming Tools") to [foreach](https://cran.r-project.org/package=foreach "foreach: Provides Foreach Looping Construct") package and its adaptors. Users are only required to add a prefix "pa\_" before their desired purrr functions (e.g. pa_map instead of map). All map family functions and all foreach adaptors on CRAN are supported. That's it! You do not need to worry about anything else, the rest will be handled internally for you.
+Run [purrr](https://cran.r-project.org/package=purrr "purrr: Functional Programming Tools")'s mapping functions in parallel (i.e., incorporate multiple CPU cores instead of the default, one). The package parapurrr does that by connecting [purrr](https://cran.r-project.org/package=purrr "purrr: Functional Programming Tools") to [foreach](https://cran.r-project.org/package=foreach "foreach: Provides Foreach Looping Construct") package and its adaptors. Users are only required to add a prefix "pa\_" before their desired purrr functions (e.g., pa_map instead of map). All map family functions and all foreach adaptors on CRAN are supported. That's it! You do not need to worry about anything else; the rest will be handled internally for you.
 
-```{r load libraries}
+```{r load libraries, eval=TRUE}
 library(purrr)
 library(parapurrr)
 ```
@@ -68,7 +68,7 @@ Currently, the following map variants are supported:
 
 # How to Install
 
-Currently, parapurrr is only published on [GitHub](https://github.com/moosa-r/parapurrr). To install the latest developmental version of parapurrr, You can use `remotes` package:
+Currently, parapurrr is only published on [GitHub](https://github.com/moosa-r/parapurrr). To install the latest developmental version of parapurrr, You can use [`remotes`](https://cran.r-project.org/package=remotes "remotes: R Package Installation from Remote Repositories, Including 'GitHub'") package:
 
 ```{r install, eval=FALSE}
 install.packages("remotes")
@@ -79,11 +79,11 @@ remotes::install_github("moosa-r/parapurrr")
 
 # A Lengthy Introduction
 
-Broadly speaking, computations can be performed in sequential or in parallel. These terms are self-explanatory, but what we do mean here by sequential is that a single CPU core will be dedicated to performing your jobs. So, your function will be applied to your input's elements one by one, meaning that each call will have to wait for the previous call to finish (hence the term sequential). On the other hand, what we mean here by parallel is that your job will be split into multiple segments, and each segment will be sent to a separate process and then to a distinct CPU core, to be computed at the same time (hence the term parallel).
+Broadly speaking, computations can be performed in sequential or in parallel. These terms are self-explanatory, but what we mean here by sequential is that a single CPU core will be dedicated to performing your jobs. So, your function will be applied to your input's elements one by one, meaning that each call will have to wait for the previous call to finish (hence the term sequential). On the other hand, what we mean here by parallel is that your job will be split into multiple segments, and each segment will be sent to a separate process and then to a distinct CPU core, to be computed simultaneously (hence the term parallel).
 
-This package aims to make the latter possible by requiring the minimum effort or background knowledge from the users. As mentioned earlier, you could simply add the prefix "pa\_" before the purrr's mapping function name (e.g., pa_map instead of map). Of course, there is much more and you have control over various aspects of the parallelization job. For instance, you can choose the backend, the parallelization strategy, and the number of workers. You can do that by using arguments that are available in every parapurrr function, but they are optional; So, more on that later.
+This package aims to make the latter possible by requiring the minimum effort or background knowledge from the users. As mentioned earlier, you could simply add the prefix "pa\_" before the purrr's mapping function name (e.g., pa_map instead of map). Of course, there is much more and you have control over various aspects of the parallelization job. For instance, you can choose the backend, the parallelization strategy, and the number of workers. You can do that by using arguments available in every parapurrr function, but they are optional; So, more on that later.
 
-Under the hood, after splitting your job into multiple segments, parapurrr will hand over each job to the famous package foreach and its adaptor. Every available foreach adaptor in CRAN is supported; Thus, you have a variety of choices based on your running environment. The adaptor, number of CPU cores to use, along with multiple other options could be altered within each parapurrr function call; Nevertheless, each of these arguments is either optional or have a default value and you can leave them as they are.
+Under the hood, after splitting your job into multiple segments, parapurrr will hand over each job to the famous package foreach and its adaptor. Every available foreach adaptor in CRAN is supported; Thus, you have a variety of choices based on your running environment. The adaptor, number of CPU cores to use, along with multiple other options could be altered within each parapurrr function call; Nevertheless, each of these arguments is either optional or has a default value; hence you can leave them as they are.
 
 ------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ pid_par <- pa_map(1:4, ~Sys.getpid())
 print(pid_par)
 ```
 
-You can see that different PIDs have been returned. This is because to do your job in parallel, different R processes were spawned or forked. You can even confirm that the number of unique PIDs does correspond to "cores" argument. Another- perhaps more tangible- approach would be to return the time within your .f function:
+You can see that different PIDs have been returned. This is because to do your job in parallel, different R processes were spawned or forked. You can even confirm that the number of unique PIDs does correspond to the "cores" argument. Another- perhaps more tangible- approach would be to return the time within your .f function:
 
 ```{r pid_cores}
 # This function will wait for 3 seconds, then returns the current time:
@@ -138,7 +138,7 @@ This argument, which is the equivalent of workers, controls the number of CPU co
 
 ## cluster_type
 
-Each foreach adaptor relies on specific architecture to perform your code in parallel. Most of the backends allow you to have different options to choose based on your system and needs. The allowed values are depended on your selected adaptor and your operation system.
+Each foreach adaptor relies on specific architecture to perform your code in parallel. Most of the backends allow you to have different options to choose from based on your system and needs. The allowed values depend on your selected adaptor and your operation system.
 
 +--------------------------------+---------------------------------+-----------------------------+
 | adaptor                        | available cluster_type          | default cluster_type value  |
@@ -162,13 +162,13 @@ Each foreach adaptor relies on specific architecture to perform your code in par
 
 : Supported parallel adaptors and their available cluster types.
 
-Note that to use MPI, you have to setup it on your machine before starting your R session. Read the guide from Rmpi developer for [Windows](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/windows.htm "Instructions to install and run Rmpi under Microsoft MPI"), [Linux](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/install.htm "Instructions to install Rmpi (under Linux only)"), or [MacOS](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/mac_os_x.htm "Rmpi for Mac OS X").
+Note that to use MPI, you have to setup it on your machine before starting your R session. Read the guide from Rmpi developer for [Windows](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/windows.htm "Instructions to install and run Rmpi under Microsoft MPI"), [Linux](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/install.htm "Instructions to install Rmpi (under Linux only)"), or [macOS](http://fisher.stats.uwo.ca/faculty/yu/Rmpi/mac_os_x.htm "Rmpi for Mac OS X").
 
 ## splitter
 
-To do your job in parallel, parapurrr will split your input into multiple segments. This splitting process is as symmetrically distributed as possible and will not consider any factors other than your input's length and available workers (cores). But you override this by explicitly telling parapurrr how to split your input. To do this, provide a list where each of its elements is a vector of integers or integer-like numbers (i.e. no decimal points) of the indexes of your input elements.
+To do your job in parallel, parapurrr will split your input into multiple segments. This splitting process is as symmetrically distributed as possible and will not consider factors other than your input's length and available workers (cores). However, you can override this by explicitly telling parapurrr how to split the input. To do this, supply a list where each of its elements is a vector of integers or integer-like numbers (i.e., no decimal points) of the indexes of your input elements.
 
-For example, suppose you have 2 CPU cores and your input's length is 6. parapurrr will split your input into 2 segments: The first segment will consist of elements 1, 2, and 3, and the second segment will have elements 4, 5 and 6:
+For example, suppose you have 2 CPU cores, and your input's length is 6. parapurrr will split your input into 2 segments: The first segment will consist of elements 1, 2, and 3, and the second segment will have elements 4, 5 and 6:
 
 ```{r splitter_auto}
 auto_split <- pa_map(1:6, ~Sys.getpid(), cores = 2)
@@ -188,13 +188,13 @@ man_split <- pa_map(1:6, ~Sys.getpid(), cores = 2,
 print(man_split)
 ```
 
-Note that some complications may arise when you manually provide the splitter argument:
+Note that some complications may arise when you manually supply the splitter argument:
 
-1.  You may provide duplicated element indexes or miss some elements. In such cases, parapurrr will halt the code execution and issues an error.
+1.  You may supply duplicated element indexes or miss some elements. In such cases, parapurrr will halt the code execution and issues an error.
 
-2.  There may be inconsistency between your provided number of CPU cores (i.e. workers) and the length of the splitter list (which implicitly dictate the number of workers to use). In this case, parapurrr will issue a warning, ignores your provided "cores" arguments, and continues the code execution based on the splitter argument.
+2.  There may be inconsistency between your supplied number of CPU cores (i.e., workers) and the length of the splitter list (which implicitly dictates the number of workers to use). In this case, parapurrr will issue a warning, ignores your supplied "cores" arguments, and continues the code execution based on the splitter argument.
 
-3.  When using `pa_map_if` or `pa_map_at`, only the elements of .x which have been selected by .p or .at respectively, will be used as the input. Thus, the splitter should correspond to the selected elements of .x not .x itself. Parapurrr will try to detect this issue and inform you about it. For example, if your input has 10 elements and 4 of them is going to be selected by .at, your splitter should contain the indexes 1 to 4.
+3.  When using `pa_map_if` or `pa_map_at`, only the elements of .x which have been selected by .p or .at respectively, will be used as the input. Thus, the splitter should correspond to the selected elements of .x not .x itself. Parapurrr will try to detect this issue and inform you about it. For example, if your input has 10 elements and 4 of them will be selected by .at, your splitter should contain the indexes 1 to 4.
 
 ## auto_export
 
@@ -250,17 +250,17 @@ print(x2)
 stopCluster(cl)
 ```
 
-## Force it by running manual_register(TRUE)
+## Force it by running manual_backend(TRUE)
 
-This will force parapurrr functions to ignore any provided "adaptor" argument.The rest will be identical to the first way: if any backend were registered, parapurrr will use it; else, your functions will be run in sequential mode. To revert to the automatic handling, simply run manual_register(FALSE).
+This will force parapurrr functions to ignore any supplied "adaptor" argument. The rest will be identical to the first way: if any backend were registered, parapurrr will use it; else, your functions will be run in sequential mode. To revert to the automatic handling, simply run manual_backend(FALSE).
 
-```{r manual_register, warning=TRUE}
-manual_register(TRUE)
+```{r manual_backend2, warning=TRUE}
+manual_backend(TRUE)
 # We expect 2 warnings here:
 x <- pa_map(1:10, ~Sys.getpid(), adaptor = "doParallel")
 
 # we can revert to the default mode:
-manual_register(FALSE)
+manual_backend(FALSE)
 ```
 
 ------------------------------------------------------------------------
@@ -270,6 +270,8 @@ manual_register(FALSE)
 There is always the issue of reproducibility when it comes to random number generators. Of course, if this issue concerns you, you will not need any further elaboration on this matter here. [doRNG](https://cran.r-project.org/package=doRNG "doRNG: Generic Reproducible Parallel Backend for 'foreach' Loops") makes it possible for foreach users to set seeds and do reproducible loops. You can use it in parapurrr by running `use_doRNG(TRUE)`. This will internally replace `%dopar%` with `%doRNG%`. You revert to normal, run `use_doRNG(FALSE)`.
 
 ```{r doRNG}
+library(doRNG)
+
 set.seed(100)
 x1 <- pa_map(1:2, runif)
 set.seed(100)
@@ -286,7 +288,7 @@ y2 <- pa_map(1:2, runif)
 # Here we expcet TRUE:
 identical(y1, y2)
 
-# Ee can revert to normal:
+# We can revert to normal:
 use_doRNG(FALSE)
 ```
 
@@ -306,7 +308,7 @@ A final remark here is that one typically switches to parallel computation when 
 
 ## Which adaptor Should I use?
 
-I can't make any recommendation. My strategy was to try to implement every available foreach adaptor in CRAN and let the user freely chose the suitable adaptor based on their system configuration, script, and in short, their judgment. Nevertheless, Because the package "parallel" is pre-distributed with R and thus, is available for every R user, to keep the required packages at a minimum, I have chosen to set it as the default parallel backend.
+I can't make any recommendations. My strategy was to try to implement every available foreach adaptor in CRAN and let the user freely chose the suitable adaptor based on their system configuration, script, and in short, their judgment. Nevertheless, Because the package "parallel" is pre-distributed with R and thus, is available for every R user, to keep the required packages at a minimum, I have chosen to set it as the default parallel backend.
 
 ## Why map() runs slower when I switch to parallel? shouldn't be the opposite?
 
