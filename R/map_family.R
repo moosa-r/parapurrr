@@ -48,7 +48,7 @@
 #'   \item If adaptor is "doSNOW":
 #'     \itemize{
 #'     \item in windows OS: "SOCK" (default for Windows)
-#'     \item in Unix-based OS: "MPI" (default for Unix), "NWS", "SOCK"
+#'     \item in Unix-based OS: "MPI" (default for Unix), "SOCK"
 #'     }
 #'   }
 #' @param auto_export (TRUE (default), FALSE or "all") Should parapurrr

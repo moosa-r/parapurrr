@@ -237,7 +237,7 @@
 #' @param cores Number of workers (default: Core numbers - 1)
 #' @param adaptor foreach adaptor, current options: doMPI, doParallel (default),
 #'   doSNOW, doFuture, doMC
-#' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
+#' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "multisession",
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
 #' @param splitter User-provided splitter. A list with numeric vectors.
 #'
@@ -285,9 +285,9 @@
            },
            "doSNOW" = {
              if (match(cluster_type,
-                       c("MPI", "NWS", "SOCK"),
+                       c("MPI", "SOCK"),
                        nomatch = 0) == 0) {
-               stop("In doSNOW, cluster_type should be 'SOCK', 'MPI', or 'NWS'.",
+               stop("In doSNOW, cluster_type should be 'SOCK' or 'MPI'.",
                     call. = FALSE)
              }
            },
@@ -356,7 +356,7 @@
 #' @param adaptor foreach adaptor. Currently, parapurr supports: \enumerate{
 #' \item "doMPI" \item "doParallel" \item "doSNOW" \item "doFuture" \item "doMC"}
 #' @param cores number of cores (i.e. workers)
-#' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "NWS", "multisession",
+#' @param cluster_type "PSOCK", "FORK", "SOCK", "MPI", "multisession",
 #'   "multicore", "cluster_FORK", or "cluster_PSOCK"
 #'
 #' @return A list containing cluster object (to be used later for terminating
@@ -385,8 +385,7 @@
          "doSNOW" = {
            if (!requireNamespace("doSNOW", quietly = TRUE)) {
              stop("Package 'doSNOW' is required to be installed. Also: \n",
-                  "If you intend to use MPI clusters: package \"Rmpi\" should be installed.\n",
-                  "If you intend to use NWS clusters: package \"nws\" should be installed.",
+                  "If you intend to use MPI clusters: package \"Rmpi\" should be installed.",
                   call. = FALSE)
            }
            cl <- snow::makeCluster(spec = cores,

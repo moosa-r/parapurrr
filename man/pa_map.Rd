@@ -209,7 +209,7 @@ adaptor. Note that allowed values for this argument depends on the
 \item If adaptor is "doSNOW":
   \itemize{
   \item in windows OS: "SOCK" (default for Windows)
-  \item in Unix-based OS: "MPI" (default for Unix), "NWS", "SOCK"
+  \item in Unix-based OS: "MPI" (default for Unix), "SOCK"
   }
 }}
 
