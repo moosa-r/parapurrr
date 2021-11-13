@@ -103,16 +103,16 @@ test_that("doMC works", {
                            cores = n_cores))
 })
 
-test_that("manual backend can be forced", {
-  expect_warning(object = pa_map(x, ~Sys.getpid(), adaptor = NULL),
-                 regexp = "Sequential")
-
-  expect_false(object = was_parallel(adaptor = NULL))
-  manual_backend(TRUE)
-  expect_false(object = was_parallel())
-  manual_backend(FALSE)
-  expect_true(object = was_parallel(cores = n_cores))
-})
+# test_that("manual backend can be forced", {
+#   expect_warning(object = pa_map(x, ~Sys.getpid(), adaptor = NULL),
+#                  regexp = "Sequential")
+#
+#   expect_false(object = was_parallel(adaptor = NULL))
+#   manual_backend(TRUE)
+#   expect_false(object = was_parallel())
+#   manual_backend(FALSE)
+#   expect_true(object = was_parallel(cores = n_cores))
+# })
 
 test_that("doRNG works", {
   use_doRNG(TRUE)
