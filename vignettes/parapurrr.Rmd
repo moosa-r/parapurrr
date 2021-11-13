@@ -250,7 +250,7 @@ print(x2)
 stopCluster(cl)
 ```
 
-## Force it by running manual_backend(TRUE)
+## Force by manual_backend(TRUE)
 
 This will force parapurrr functions to ignore any supplied "adaptor" argument. The rest will be identical to the first way: if any backend were registered, parapurrr will use it; else, your functions will be run in sequential mode. To revert to the automatic handling, simply run manual_backend(FALSE).
 
@@ -327,6 +327,12 @@ You have two solutions: First, you can export that package (the same concept of 
 ## Can I prevent parapurrr from handling parallel backend and foreach adaptor and control that manually?
 
 Yes, It has been covered in this article.
+
+## What about furrr?
+
+The fantastic [furrr](https://cran.r-project.org/package=furrr "furrr: Apply Mapping Functions in Parallel using Futures") package by [Davis Vaughan](https://github.com/DavisVaughan) is the original work to provide a tool to make purrr's function parallel by adding a prefix before the functions' name. Although parapurrr follow the same principle, the implementations are different. The main difference is that furrrr use [future parallel backend](https://cran.r-project.org/package=future "future: Unified Parallel and Distributed Processing in R for Everyone") and is more mature, whereas parapurrr is in the alpha stage and uses foreach to make it possible to support a broader range of parallel backbends.
+
+This package, parapurrr, is an extended version of the private codes I initially wrote to use purrr with R's parallel package. I do not intend to submit parapurrr to CRAN currently and, of course, without asking for permission from the author of furrr package..
 
 ------------------------------------------------------------------------
 

@@ -9,7 +9,7 @@ Authors@R:
            email = "moosa.rezwani@gmail.com")
 Description: Run purrr's mapping functions in parallel (i.e., incorporate
     multiple CPU cores instead of the default, one). The package parapurrr
-    does that by connecting purrr to foreach package and its adaptors.
+    achieves that by bridging purrr with foreach package and its adaptors.
     Users are only required to add a prefix "pa_" before their desired
     purrr functions (e.g. pa_map instead of map). All map family functions
     and all foreach adaptors on CRAN are supported.
