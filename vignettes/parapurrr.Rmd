@@ -218,7 +218,7 @@ By default, when you call a parapurrr function, a series of actions will be perf
 
 2.  The cluster will be registered as doPar backend (hence will be available for foreach).
 
-3.  After finishing the execution of your code, the cluster and its relevant processes will be terminated and your environment will be cleaned.
+3.  After finishing the execution of your code, the cluster and its relevant processes will be terminated and your foreach environment will be restored to the state before running the parapurrr function.
 
 No matter what adaptor and cluster type you have chosen, the above steps will be performed. For a variety of reasons, you may want to manually override that. For example, you may want to register your doPar backend, perform a series of parapurrr functions, and then terminate the backend manually. Or, you want to register a cluster of multiple computers in your network. You can disable the automatic handling of backends and do that manually in two ways:
 

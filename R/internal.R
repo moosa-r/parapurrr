@@ -432,13 +432,15 @@
 }
 
 
-#' Terminate active cluster
+#' Terminate active cluster and revert registered adaptor
 #'
 #' @param active_cl cluster object returned by .pa_reg_clusters function
+#' @param last_adaptor foreach internal environment before registering adaptor
+#'   by parapurrr's .pa_reg_clusters
 #'
 #' @return NULL, stops clusters as a side-effect.
 #' @noRd
-.pa_stop_clusters <- function(active_cl) {
+.pa_stop_clusters <- function(active_cl, last_adaptor) {
   switch(active_cl$adaptor,
          "doMPI" = {
            doMPI::closeCluster(active_cl$cluster)
@@ -461,11 +463,18 @@
            invisible()
          }
   )
-  #un-register doPar, based on:
-  # https://stackoverflow.com/questions/25097729/un-register-a-doparallel-cluster/25110203#25110203
-  foreach::registerDoSEQ()
-  env <- foreach:::.foreachGlobals
-  rm(list = ls(name = env),pos = env)
+  # Revert doPar registration to the status before running parapurrr function
+  foreach_env <- foreach:::.foreachGlobals
+  if (length(last_adaptor) == 0) {
+    # based on: https://stackoverflow.com/a/25110203/11470581
+    rm(list = ls(name = foreach_env),
+       pos = foreach_env)
+  } else {
+    purrr::iwalk(.x = last_adaptor,
+                 .f = ~assign(x = .y,
+                              value = .x,
+                              pos = foreach_env))
+  }
 
   invisible()
 }
@@ -563,10 +572,12 @@
                          cluster_type = cluster_type,
                          splitter = splitter)
     # register cluster
+    last_adaptor <- as.list(foreach:::.foreachGlobals)
     cl <- .pa_reg_clusters(adaptor = adaptor,
                            cores = int_args$cores,
                            cluster_type = int_args$cluster_type)
-    on.exit(.pa_stop_clusters(cl))
+    on.exit(.pa_stop_clusters(active_cl = cl,
+                              last_adaptor = last_adaptor))
   }
 
   # split the input
