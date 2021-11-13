@@ -1,5 +1,5 @@
 ---
-title: "parapurrr: Do purrr in Parallel"
+title: "parapurrr: Do purrr in Parallel (Alpha version)"
 author: "Moosa Rezwani"
 date: "`r Sys.Date()`"
 output: github_document

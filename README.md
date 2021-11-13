@@ -1,4 +1,4 @@
-parapurrr: Do purrr in Parallel
+parapurrr: Do purrr in Parallel (Alpha version)
 ================
 Moosa Rezwani
 2021-11-13
@@ -119,16 +119,16 @@ execute your codes, we expect that all the returned PIDs to be the same:
 pid_seq <- map(1:4, ~Sys.getpid())
 print(pid_seq)
 #> [[1]]
-#> [1] 10220
+#> [1] 8760
 #> 
 #> [[2]]
-#> [1] 10220
+#> [1] 8760
 #> 
 #> [[3]]
-#> [1] 10220
+#> [1] 8760
 #> 
 #> [[4]]
-#> [1] 10220
+#> [1] 8760
 ```
 
 As you can see, all of the .f calls were performed by a single process.
@@ -138,16 +138,16 @@ Now, let us check parapurrr:
 pid_par <- pa_map(1:4, ~Sys.getpid())
 print(pid_par)
 #> [[1]]
-#> [1] 11144
+#> [1] 13136
 #> 
 #> [[2]]
-#> [1] 11144
+#> [1] 13136
 #> 
 #> [[3]]
-#> [1] 11364
+#> [1] 12572
 #> 
 #> [[4]]
-#> [1] 11364
+#> [1] 12572
 ```
 
 You can see that different PIDs have been returned. This is because to
@@ -170,18 +170,18 @@ time_par <- pa_map(1:2, check_time)
 # the recorded times:
 print(time_seq)
 #> [[1]]
-#> [1] "2021-11-13 22:56:15 +0330"
+#> [1] "2021-11-13 23:25:39 +0330"
 #> 
 #> [[2]]
-#> [1] "2021-11-13 22:56:18 +0330"
+#> [1] "2021-11-13 23:25:42 +0330"
 # But in parallel mode, the recorded times are the same, because they were run
 # togeather in parallel
 print(time_par)
 #> [[1]]
-#> [1] "2021-11-13 22:56:22 +0330"
+#> [1] "2021-11-13 23:25:46 +0330"
 #> 
 #> [[2]]
-#> [1] "2021-11-13 22:56:22 +0330"
+#> [1] "2021-11-13 23:25:46 +0330"
 ```
 
 ------------------------------------------------------------------------
@@ -309,22 +309,22 @@ auto_split <- pa_map(1:6, ~Sys.getpid(), cores = 2)
 # distributed across the workers.
 print(auto_split)
 #> [[1]]
-#> [1] 11392
+#> [1] 12588
 #> 
 #> [[2]]
-#> [1] 11392
+#> [1] 12588
 #> 
 #> [[3]]
-#> [1] 11392
+#> [1] 12588
 #> 
 #> [[4]]
-#> [1] 1320
+#> [1] 11576
 #> 
 #> [[5]]
-#> [1] 1320
+#> [1] 11576
 #> 
 #> [[6]]
-#> [1] 1320
+#> [1] 11576
 ```
 
 You can change this, by for example, demanding the elements 1 and 2 to
@@ -338,22 +338,22 @@ man_split <- pa_map(1:6, ~Sys.getpid(), cores = 2, splitter = list(1:2, 3:6))
 # workers.
 print(man_split)
 #> [[1]]
-#> [1] 9612
+#> [1] 7076
 #> 
 #> [[2]]
-#> [1] 9612
+#> [1] 7076
 #> 
 #> [[3]]
-#> [1] 6164
+#> [1] 11148
 #> 
 #> [[4]]
-#> [1] 6164
+#> [1] 11148
 #> 
 #> [[5]]
-#> [1] 6164
+#> [1] 11148
 #> 
 #> [[6]]
-#> [1] 6164
+#> [1] 11148
 ```
 
 Note that some complications may arise when you manually supply the
@@ -451,13 +451,13 @@ x <- pa_map(1:3, ~Sys.getpid(), adaptor = NULL)
 # we can confirm that by checking that only one PID was returned:
 print(x)
 #> [[1]]
-#> [1] 10220
+#> [1] 8760
 #> 
 #> [[2]]
-#> [1] 10220
+#> [1] 8760
 #> 
 #> [[3]]
-#> [1] 10220
+#> [1] 8760
 ```
 
 ``` r
