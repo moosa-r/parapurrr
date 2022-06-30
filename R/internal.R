@@ -78,6 +78,14 @@
             immediate. = TRUE, call. = FALSE)
   }
 
+  if (!is.null(getOption("pa_force_adaptor")) && !is.null(adaptor)) {
+    warning("adaptor = ", adaptor,
+            " is ignored, because forcing adaptor selection was enabled.\n",
+            "To revert that and re-enable automatic backend registeration, run:",
+            "force_adaptor(FALSE)",
+            immediate. = TRUE, call. = FALSE)
+  }
+
   invisible()
 }
 
@@ -563,6 +571,11 @@
                                 adaptor = adaptor,
                                 splitter = splitter)
   } else {
+    force_adaptor <- getOption("pa_force_adaptor")
+    if (!is.null(force_adaptor)) {
+      adaptor <- force_adaptor
+      cluster_type <- getOption("pa_force_cluster_type")
+    }
     int_args <- .pa_args(x_length = ifelse(test = is.null(.l),
                                            yes = length(.x),
                                            no = length(.l[[1]])),

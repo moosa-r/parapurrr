@@ -27,5 +27,7 @@
 .onLoad <- function(libname, pkgname) {
   options(pa_cores = parallel::detectCores() - 1,
           pa_manual_backend = FALSE,
+          pa_force_adaptor = NULL,
+          pa_force_cluster_type = NULL,
           pa_dorng = FALSE)
 }

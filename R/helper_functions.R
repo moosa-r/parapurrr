@@ -23,6 +23,20 @@
 manual_backend <- function(force) {
   if (!is.null(force) && !is.na(force) & is.logical(force)) {
     options(pa_manual_backend = force)
+
+    current_pa_force_adaptor <- getOption("pa_force_adaptor")
+    if (!is.null(current_pa_force_adaptor)) {
+      warning("The options previously set by the `force_adaptor(",
+              ifelse(is.null(current_pa_force_adaptor),
+                     yes = "NULL", no =  current_pa_force_adaptor),
+              ")` function call ",
+              "was reverted to the default settings after a conflict caused by ",
+              "calling manual_backend(",
+              force,
+              ")")
+      options(pa_force_adaptor = NULL,
+              pa_force_cluster_type = NULL)
+    }
   } else {
     stop("force should be either TRUE or FALSE.", call. = FALSE)
   }
@@ -57,5 +71,56 @@ use_doRNG <- function(dorng) {
   } else {
     stop("dorng should be either TRUE or FALSE.", call. = FALSE)
   }
+  invisible(NULL)
+}
+
+#' Force An Adaptor
+#'
+#' You can force parapurrr to ignore the "adaptor" parameters supplied in
+#'   parapurrr function and force using a specific adaptor.
+#'
+#' @param force_adaptor What adaptor to force? valis values are:
+#'   "doMPI", "doParallel", "doSNOW", "doFuture", and "doMC".
+#' @param force_cluster_type What cluster type to force?
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' force_adaptor(doFuture)}
+force_adaptor <- function(force_adaptor = NULL, force_cluster_type = NULL) {
+  if (isFALSE(force_adaptor) || is.null(force_adaptor)) {
+
+    options(pa_force_adaptor = NULL,
+            pa_force_cluster_type = NULL)
+
+  } else {
+
+    if (match(force_adaptor,
+              c("doMPI", "doParallel", "doSNOW", "doFuture", "doMC"),
+              nomatch = 0) == 0) {
+      stop("Invalid adaptor. Valid values are: doMPI, doParallel, doSNOW, doFuture, doMC.",
+           call. = FALSE)
+    } else {
+      options(pa_force_adaptor = force_adaptor)
+      options(pa_force_cluster_type = force_cluster_type)
+
+      if (isTRUE(getOption("pa_manual_backend"))) {
+        warning("The options previously set by the `manual_backend(TRUE)` function call ",
+                "was reverted to the default settings after a conflict caused by ",
+                "calling force_adaptor(",
+                ifelse(is.null(force_adaptor),
+                       yes = "NULL", no =  force_adaptor),
+                ", ",
+                ifelse(is.null(force_cluster_type),
+                       yes = "NULL", no =  force_cluster_type),
+                ")")
+        options(pa_manual_backend = FALSE)
+      }
+    }
+
+  }
+
   invisible(NULL)
 }
