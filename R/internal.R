@@ -386,9 +386,15 @@
              stop("Package 'doParallel' is required to be installed.",
                   call. = FALSE)
            }
-           cl <- parallel::makeCluster(spec = cores,
-                                       type = cluster_type)
-           doParallel::registerDoParallel(cl)
+           if (.Platform$OS.type == "unix" && cluster_type == "FORK") {
+             # Enforce doParallel to use mclapply and be a bit more memory efficient
+             cl <- NA
+             doParallel::registerDoParallel(cores)
+           } else {
+             cl <- parallel::makeCluster(spec = cores,
+                                         type = cluster_type)
+             doParallel::registerDoParallel(cl)
+           }
          },
          "doSNOW" = {
            if (!requireNamespace("doSNOW", quietly = TRUE)) {
@@ -455,7 +461,9 @@
          },
          "doParallel" = {
            doParallel::stopImplicitCluster()
-           parallel::stopCluster(active_cl$cluster)
+           if (inherits(active_cl$cluster, "cluster")) {
+             parallel::stopCluster(active_cl$cluster)
+           }
          },
          "doSNOW" = {
            snow::stopCluster(active_cl$cluster)
