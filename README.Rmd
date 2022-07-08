@@ -5,9 +5,7 @@ date: "`r Sys.Date()`"
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include = FALSE}
+```{r setup, include = FALSE, echo=FALSE, results="hide"}
 knitr::opts_chunk$set(echo = TRUE,
                       eval = TRUE,
                       message = FALSE,
@@ -16,8 +14,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       tidy = TRUE,
                       cache = FALSE,
                       dev = "png",
-                      comment = "#>"
-)
+                      comment = "#>")
 ```
 
 <!-- badges: start -->
@@ -218,7 +215,7 @@ By default, when you call a parapurrr function, a series of actions will be perf
 
 No matter what adaptor and cluster type you have chosen, the above steps will be performed. For a variety of reasons, you may want to manually override that. For example, you may want to register your doPar backend, perform a series of parapurrr functions, and then terminate the backend manually. Or, you want to register a cluster of multiple computers in your network. You can disable the automatic handling of backends and do that manually in two ways:
 
-## Run your parapurrr functions with adaptor = NULL
+## Run your parapurrr functions with `adaptor = NULL`
 
 parapurrr will seek for any registered doPar backend and will hand over your job to it. If there were no registered backend, a warning will be generated and your function will be run in sequential mode(i.e. as if you were using purrr normally).
 
@@ -246,9 +243,11 @@ print(x2)
 stopCluster(cl)
 ```
 
-## Force by manual_backend(TRUE)
+## Force by `manual_backend(TRUE)`
 
 This will force parapurrr functions to ignore any supplied "adaptor" argument. The rest will be identical to the first way: if any backend were registered, parapurrr will use it; else, your functions will be run in sequential mode. To revert to the automatic handling, simply run manual_backend(FALSE).
+
+Note: This is different than using `force_adaptor()`. The `manual_backend()` will prevent any parapaurrr function from registering and handling a foreach adaptor. On the other hand, the `force_adaptor()` function make all parapurrr functions register, use and handle a specified foreach adaptor, while ignoring any adaptor supplied by the given parapurrr function.
 
 ```{r manual_backend2, warning=TRUE}
 manual_backend(TRUE)
@@ -257,6 +256,28 @@ x <- pa_map(1:10, ~Sys.getpid(), adaptor = "doParallel")
 
 # we can revert to the default mode:
 manual_backend(FALSE)
+```
+
+## Force a parallel backend with `force_adaptor()`
+
+You can force parapurrr to use a specific foreach parallel `adaptor` and `cluster type` value in a session. The forced values will be respected throughout the session, and any values supplied by the `adaptor` and `cluster_type` in the individual parapurrr function will be ignored. This is useful in cases such as when you want to specify the adaptor once and not repeat it with each parapurrr function call. To revert to the automatic handling, simply run `force_adaptor()`.
+
+Note: This is different than using `manual_backend()`. The `manual_backend()` will prevent any parapaurrr function from registering and handling a foreach adaptor. On the other hand, the `force_adaptor()` function make all parapurrr functions register, use and handle a specified foreach adaptor, while ignoring any adaptor supplied by the given parapurrr function.
+
+```{r force_adaptor, warning=TRUE}
+force_adaptor(force_adaptor = "doFuture")
+# From now on, any parapurrr function will use Future parallell backend.
+# Even if you explicity specify another backend in a parapurrr function call,
+# the values provided by force_adaptor() has more priority.
+# Thus, Any of theese function calls will use "doFuture" adaptor:
+pa_map(1:10, sqrt)
+pa_map(1:10, sqrt, adaptor = NULL)
+pa_map(1:10, sqrt, adaptor = "doParallel")
+
+# we can revert to the default mode by one of the -equivalent- following calls:
+force_adaptor()
+force_adaptor(NULL)
+force_adaptor(force_adaptor = NULL, force_cluster_type = NULL)
 ```
 
 ------------------------------------------------------------------------

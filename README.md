@@ -1,9 +1,8 @@
 parapurrr: Do purrr in Parallel (Alpha version)
 ================
 Moosa Rezwani
-2021-11-13
+2022-07-08
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/moosa-r/parapurrr/workflows/R-CMD-check/badge.svg)](https://github.com/moosa-r/parapurrr/actions)
@@ -119,16 +118,16 @@ execute your codes, we expect that all the returned PIDs to be the same:
 pid_seq <- map(1:4, ~Sys.getpid())
 print(pid_seq)
 #> [[1]]
-#> [1] 8760
+#> [1] 12080
 #> 
 #> [[2]]
-#> [1] 8760
+#> [1] 12080
 #> 
 #> [[3]]
-#> [1] 8760
+#> [1] 12080
 #> 
 #> [[4]]
-#> [1] 8760
+#> [1] 12080
 ```
 
 As you can see, all of the .f calls were performed by a single process.
@@ -138,16 +137,16 @@ Now, let us check parapurrr:
 pid_par <- pa_map(1:4, ~Sys.getpid())
 print(pid_par)
 #> [[1]]
-#> [1] 13136
+#> [1] 2276
 #> 
 #> [[2]]
-#> [1] 13136
+#> [1] 2276
 #> 
 #> [[3]]
-#> [1] 12572
+#> [1] 14580
 #> 
 #> [[4]]
-#> [1] 12572
+#> [1] 14580
 ```
 
 You can see that different PIDs have been returned. This is because to
@@ -170,18 +169,19 @@ time_par <- pa_map(1:2, check_time)
 # the recorded times:
 print(time_seq)
 #> [[1]]
-#> [1] "2021-11-13 23:25:39 +0330"
+#> [1] "2022-07-08 13:01:58 +0430"
 #> 
 #> [[2]]
-#> [1] "2021-11-13 23:25:42 +0330"
+#> [1] "2022-07-08 13:02:01 +0430"
+
 # But in parallel mode, the recorded times are the same, because they were run
 # togeather in parallel
 print(time_par)
 #> [[1]]
-#> [1] "2021-11-13 23:25:46 +0330"
+#> [1] "2022-07-08 13:02:05 +0430"
 #> 
 #> [[2]]
-#> [1] "2021-11-13 23:25:46 +0330"
+#> [1] "2022-07-08 13:02:05 +0430"
 ```
 
 ------------------------------------------------------------------------
@@ -227,7 +227,8 @@ options to choose from based on your system and needs. The allowed
 values depend on your selected adaptor and your operation system.
 
 <table>
-<caption>Supported parallel adaptors and their available cluster types.</caption>
+<caption>Supported parallel adaptors and their available cluster
+types.</caption>
 <colgroup>
 <col style="width: 34%" />
 <col style="width: 35%" />
@@ -309,22 +310,22 @@ auto_split <- pa_map(1:6, ~Sys.getpid(), cores = 2)
 # distributed across the workers.
 print(auto_split)
 #> [[1]]
-#> [1] 12588
+#> [1] 8252
 #> 
 #> [[2]]
-#> [1] 12588
+#> [1] 8252
 #> 
 #> [[3]]
-#> [1] 12588
+#> [1] 8252
 #> 
 #> [[4]]
-#> [1] 11576
+#> [1] 14720
 #> 
 #> [[5]]
-#> [1] 11576
+#> [1] 14720
 #> 
 #> [[6]]
-#> [1] 11576
+#> [1] 14720
 ```
 
 You can change this, by for example, demanding the elements 1 and 2 to
@@ -338,22 +339,22 @@ man_split <- pa_map(1:6, ~Sys.getpid(), cores = 2, splitter = list(1:2, 3:6))
 # workers.
 print(man_split)
 #> [[1]]
-#> [1] 7076
+#> [1] 10448
 #> 
 #> [[2]]
-#> [1] 7076
+#> [1] 10448
 #> 
 #> [[3]]
-#> [1] 11148
+#> [1] 7780
 #> 
 #> [[4]]
-#> [1] 11148
+#> [1] 7780
 #> 
 #> [[5]]
-#> [1] 11148
+#> [1] 7780
 #> 
 #> [[6]]
-#> [1] 11148
+#> [1] 7780
 ```
 
 Note that some complications may arise when you manually supply the
@@ -435,7 +436,7 @@ manually. Or, you want to register a cluster of multiple computers in
 your network. You can disable the automatic handling of backends and do
 that manually in two ways:
 
-## Run your parapurrr functions with adaptor = NULL
+## Run your parapurrr functions with `adaptor = NULL`
 
 parapurrr will seek for any registered doPar backend and will hand over
 your job to it. If there were no registered backend, a warning will be
@@ -448,16 +449,17 @@ x <- pa_map(1:3, ~Sys.getpid(), adaptor = NULL)
 #> Warning: By calling manual_backend(TRUE) or providing adaptor = NULL, you have forced manual doPar backend handeling;
 #> But you did `not` register any backends before calling this function:
 #> *** Running your code in `Sequential` mode. ***
+
 # we can confirm that by checking that only one PID was returned:
 print(x)
 #> [[1]]
-#> [1] 8760
+#> [1] 12080
 #> 
 #> [[2]]
-#> [1] 8760
+#> [1] 12080
 #> 
 #> [[3]]
-#> [1] 8760
+#> [1] 12080
 ```
 
 ``` r
@@ -477,13 +479,20 @@ print(x2)
 stopCluster(cl)
 ```
 
-## Force by manual_backend(TRUE)
+## Force by `manual_backend(TRUE)`
 
 This will force parapurrr functions to ignore any supplied “adaptor”
 argument. The rest will be identical to the first way: if any backend
 were registered, parapurrr will use it; else, your functions will be run
 in sequential mode. To revert to the automatic handling, simply run
 manual_backend(FALSE).
+
+Note: This is different than using `force_adaptor()`. The
+`manual_backend()` will prevent any parapaurrr function from registering
+and handling a foreach adaptor. On the other hand, the `force_adaptor()`
+function make all parapurrr functions register, use and handle a
+specified foreach adaptor, while ignoring any adaptor supplied by the
+given parapurrr function.
 
 ``` r
 manual_backend(TRUE)
@@ -494,8 +503,136 @@ x <- pa_map(1:10, ~Sys.getpid(), adaptor = "doParallel")
 #> Warning: By calling manual_backend(TRUE) or providing adaptor = NULL, you have forced manual doPar backend handeling;
 #> But you did `not` register any backends before calling this function:
 #> *** Running your code in `Sequential` mode. ***
+
 # we can revert to the default mode:
 manual_backend(FALSE)
+```
+
+## Force a parallel backend with `force_adaptor()`
+
+You can force parapurrr to use a specific foreach parallel `adaptor` and
+`cluster type` value in a session. The forced values will be respected
+throughout the session, and any values supplied by the `adaptor` and
+`cluster_type` in the individual parapurrr function will be ignored.
+This is useful in cases such as when you want to specify the adaptor
+once and not repeat it with each parapurrr function call. To revert to
+the automatic handling, simply run `force_adaptor()`.
+
+Note: This is different than using `manual_backend()`. The
+`manual_backend()` will prevent any parapaurrr function from registering
+and handling a foreach adaptor. On the other hand, the `force_adaptor()`
+function make all parapurrr functions register, use and handle a
+specified foreach adaptor, while ignoring any adaptor supplied by the
+given parapurrr function.
+
+``` r
+force_adaptor(force_adaptor = "doFuture")
+# From now on, any parapurrr function will use Future parallell backend.  Even
+# if you explicity specify another backend in a parapurrr function call, the
+# values provided by force_adaptor() has more priority.  Thus, Any of theese
+# function calls will use 'doFuture' adaptor:
+pa_map(1:10, sqrt)
+#> Warning: adaptor = doParallel is ignored, because forcing adaptor selection was enabled.
+#> To revert that and re-enable automatic backend registeration, run:force_adaptor(FALSE)
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 1.414214
+#> 
+#> [[3]]
+#> [1] 1.732051
+#> 
+#> [[4]]
+#> [1] 2
+#> 
+#> [[5]]
+#> [1] 2.236068
+#> 
+#> [[6]]
+#> [1] 2.44949
+#> 
+#> [[7]]
+#> [1] 2.645751
+#> 
+#> [[8]]
+#> [1] 2.828427
+#> 
+#> [[9]]
+#> [1] 3
+#> 
+#> [[10]]
+#> [1] 3.162278
+pa_map(1:10, sqrt, adaptor = NULL)
+#> Warning: By calling manual_backend(TRUE) or providing adaptor = NULL, you have forced manual doPar backend handeling;
+#> But you did `not` register any backends before calling this function:
+#> *** Running your code in `Sequential` mode. ***
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 1.414214
+#> 
+#> [[3]]
+#> [1] 1.732051
+#> 
+#> [[4]]
+#> [1] 2
+#> 
+#> [[5]]
+#> [1] 2.236068
+#> 
+#> [[6]]
+#> [1] 2.44949
+#> 
+#> [[7]]
+#> [1] 2.645751
+#> 
+#> [[8]]
+#> [1] 2.828427
+#> 
+#> [[9]]
+#> [1] 3
+#> 
+#> [[10]]
+#> [1] 3.162278
+pa_map(1:10, sqrt, adaptor = "doParallel")
+#> Warning: adaptor = doParallel is ignored, because forcing adaptor selection was enabled.
+#> To revert that and re-enable automatic backend registeration, run:force_adaptor(FALSE)
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 1.414214
+#> 
+#> [[3]]
+#> [1] 1.732051
+#> 
+#> [[4]]
+#> [1] 2
+#> 
+#> [[5]]
+#> [1] 2.236068
+#> 
+#> [[6]]
+#> [1] 2.44949
+#> 
+#> [[7]]
+#> [1] 2.645751
+#> 
+#> [[8]]
+#> [1] 2.828427
+#> 
+#> [[9]]
+#> [1] 3
+#> 
+#> [[10]]
+#> [1] 3.162278
+
+# we can revert to the default mode by one of the -equivalent- following calls:
+force_adaptor()
+force_adaptor(NULL)
+force_adaptor(force_adaptor = NULL, force_cluster_type = NULL)
 ```
 
 ------------------------------------------------------------------------
@@ -521,6 +658,7 @@ x2 <- pa_map(1:2, runif)
 # Here we expcet FALSE:
 identical(x1, x2)
 #> [1] FALSE
+
 # But we can incorporate doRNG for reproducibility:
 use_doRNG(TRUE)
 set.seed(100)
@@ -530,6 +668,7 @@ y2 <- pa_map(1:2, runif)
 # Here we expcet TRUE:
 identical(y1, y2)
 #> [1] TRUE
+
 # We can revert to normal:
 use_doRNG(FALSE)
 ```
@@ -641,7 +780,7 @@ permission from the author of furrr package..
 
 # Session info
 
-    #> R version 4.1.1 (2021-08-10)
+    #> R version 4.1.2 (2021-11-01)
     #> Platform: x86_64-w64-mingw32/x64 (64-bit)
     #> Running under: Windows 10 x64 (build 19044)
     #> 
@@ -659,12 +798,14 @@ permission from the author of furrr package..
     #> [1] stats     graphics  grDevices utils     datasets  methods   base     
     #> 
     #> other attached packages:
-    #> [1] doRNG_1.8.2     rngtools_1.5    foreach_1.5.1   parapurrr_0.1.0
+    #> [1] doRNG_1.8.2     rngtools_1.5.2  foreach_1.5.2   parapurrr_0.1.0
     #> [5] purrr_0.3.4    
     #> 
     #> loaded via a namespace (and not attached):
-    #>  [1] codetools_0.2-18  digest_0.6.27     formatR_1.11      magrittr_2.0.1   
-    #>  [5] evaluate_0.14     rlang_0.4.12      stringi_1.7.4     doParallel_1.0.16
-    #>  [9] rmarkdown_2.11    iterators_1.0.13  tools_4.1.1       stringr_1.4.0    
-    #> [13] parallel_4.1.1    xfun_0.26         yaml_2.2.1        fastmap_1.1.0    
-    #> [17] compiler_4.1.1    htmltools_0.5.2   knitr_1.34
+    #>  [1] parallelly_1.30.0 knitr_1.37        magrittr_2.0.2    doParallel_1.0.17
+    #>  [5] rlang_1.0.2       fastmap_1.1.0     stringr_1.4.0     globals_0.14.0   
+    #>  [9] tools_4.1.2       parallel_4.1.2    xfun_0.30         cli_3.2.0        
+    #> [13] htmltools_0.5.2   iterators_1.0.14  yaml_2.3.5        digest_0.6.29    
+    #> [17] formatR_1.11      codetools_0.2-18  evaluate_0.15     rmarkdown_2.13   
+    #> [21] stringi_1.7.6     compiler_4.1.2    doFuture_0.12.0   future_1.24.0    
+    #> [25] listenv_0.8.0
